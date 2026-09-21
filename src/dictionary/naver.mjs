@@ -14,7 +14,11 @@ export function parseNaver(data,lang,query) {
   const map=data?.searchResultMap?.searchResultListMap;
   if(!map||!map.WORD||!Array.isArray(map.WORD.items)) throw new Error('네이버 사전 응답 구조가 변경되었습니다. 원문에서 확인해 주세요.');
   const l=languages[lang], examples=map.EXAMPLE?.items??[];
-  const results=map.WORD.items.slice(0,12).map(item=>{
+  const items=[...(map.WORD.items??[]),...(map.IDIOM?.items??[])].filter((item,index,all)=>{
+    const key=item.entryId||item.destinationLink||`${item.expEntry}:${item.sourceCid??''}`;
+    return index===all.findIndex(other=>(other.entryId||other.destinationLink||`${other.expEntry}:${other.sourceCid??''}`)===key);
+  }).slice(0,16);
+  const results=items.map(item=>{
     const headword=clean(lang==='ja'&&item.expKanji?item.expKanji:item.expEntry);
     const reading=lang==='ja'?clean(item.expEntry):'';
     const pronunciation=[...new Set((item.searchPhoneticSymbolList??[]).map(p=>clean(p.symbolValue)).filter(Boolean))].join(' / ');
@@ -25,12 +29,12 @@ export function parseNaver(data,lang,query) {
     const related=examples.find(e=>e.expEntryURL===item.destinationLink&&e.expExample2);
     let source=sourceURL(lang,query);
     if(/^#\/entry\/[a-z]+\/[a-zA-Z0-9]+$/.test(item.destinationLink??''))source=l.origin+l.path+item.destinationLink;
-    return {entryId:String(item.entryId??''),language:lang,query,headword,reading,pronunciation,pos,
+    return {entryId:String(item.entryId??''),language:lang,query,headword,reading,pronunciation,pos,kind:clean(item.expDictTypeForm)==='숙어'?'숙어':'단어',
       lemma:headword,gender:lang==='es'?(/여성/.test(pos)?'여성':/남성/.test(pos)?'남성':''):'',
       senses,example:example?.example||clean(related?.expExample1),translation:example?.translation||clean(related?.expExample2),
       source,provider:clean(item.sourceDictnameKO),fetchedAt:Date.now()};
   }).filter(x=>x.headword&&x.senses.length);
-  if(map.WORD.items.length&&!results.length)throw new Error('검색 응답에서 표제어와 뜻을 읽지 못했습니다. 네이버 페이지 구조를 확인해야 합니다.');
+  if(items.length&&!results.length)throw new Error('검색 응답에서 표제어와 뜻을 읽지 못했습니다. 네이버 페이지 구조를 확인해야 합니다.');
   return results;
 }
 export async function searchNaver(lang,query,fetcher=fetch){

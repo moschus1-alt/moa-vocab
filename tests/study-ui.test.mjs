@@ -1,0 +1,11 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {gradeAnswer,normalizeAnswer,quizDirection} from '../src/study/quiz.js';
+import {loadStudyPreferences,saveStudyPreferences} from '../src/study/preferences.js';
+const word={language:'es',headword:'casa',lemma:'casa',senses:[{meaning:'집, 가옥, 주택'}]};
+test('foreign to Korean accepts one selected synonym',()=>{assert.equal(gradeAnswer(word,'foreign-ko','집').correct,true);assert.equal(gradeAnswer(word,'foreign-ko','회사').correct,false)});
+test('Korean to foreign checks saved headword',()=>{assert.equal(gradeAnswer(word,'ko-foreign','Casa').correct,true);assert.equal(gradeAnswer(word,'ko-foreign','casá').correct,false)});
+test('Japanese reading is accepted for Korean to foreign',()=>assert.equal(gradeAnswer({language:'ja',headword:'食べる',reading:'たべる',lemma:'食べる',senses:[{meaning:'먹다'}]},'ko-foreign','たべる').correct,true));
+test('mixed direction alternates',()=>{assert.equal(quizDirection('mixed',0),'foreign-ko');assert.equal(quizDirection('mixed',1),'ko-foreign')});
+test('study settings persist and invalid values fall back',()=>{let value='';const box={getItem:()=>value,setItem:(_,v)=>value=v};saveStudyPreferences({language:'ja',order:'random',mode:'quiz',direction:'mixed',dueOnly:true},box);assert.deepEqual(loadStudyPreferences(box),{language:'ja',order:'random',mode:'quiz',direction:'mixed',dueOnly:true});value='{"language":"xx"}';assert.equal(loadStudyPreferences(box).language,'all')});
+test('normalization preserves accented letters',()=>{assert.equal(normalizeAnswer('  CÁSÁ! '),'cásá')});

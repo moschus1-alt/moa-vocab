@@ -6,6 +6,7 @@ export function validateWord(w){
  const senses=w.senses.map(s=>{if(!s||!text(s.meaning))throw new Error('뜻이 비어 있는 단어가 있습니다.');return {meaning:text(s.meaning),pos:text(s.pos,150),example:text(s.example),translation:text(s.translation)}});
  const out={language:w.language,senses};
  for(const k of ['headword','query','reading','pronunciation','pos','lemma','gender','example','translation','provider','entryId'])out[k]=text(w[k],['headword','query'].includes(k)?150:4000);
+ out.kind=w.kind==='숙어'?'숙어':'단어';
  out.queries=[...new Set([out.query,...(Array.isArray(w.queries)?w.queries:[])].map(q=>text(q,150)).filter(Boolean))].slice(0,100);
  out.source=/^https:\/\/(?:[a-z]+\.)?dict\.naver\.com\//.test(w.source??'')?w.source:'';
  out.id=text(w.id,100)||crypto.randomUUID();

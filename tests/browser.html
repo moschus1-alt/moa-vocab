@@ -12,8 +12,11 @@ try {
  const backup=JSON.parse(JSON.stringify(await s.backup()));await s.remove(w.id);assert((await s.all()).length===0,'삭제');await s.restore(backup);saved=await s.all();assert(saved.length===1&&saved[0].study.reviews===3&&saved[0].senses[0].meaning.endsWith('(검증)'),'JSON 직렬화 후 뜻 및 복습 기록 복원');
  await s.restore(backup);assert((await s.all()).length===1,'같은 백업 재복원 중복 방지');
  try{await s.restore({app:'moa-vocab',version:1,words:[...backup.words,{language:'xx'}]})}catch{}assert((await s.all()).length===1,'잘못된 백업 전체 거절 및 기존 데이터 유지');
- const reg=await navigator.serviceWorker.register('/sw.js');await navigator.serviceWorker.ready;const cache=await caches.open('moa-shell-v2');assert(!!await cache.match('/index.html'),'PWA 오프라인 HTML 캐시');assert(!!await cache.match('/src/vocabulary/storage.js'),'PWA 저장소 모듈 캐시');const manifest=await(await fetch('/manifest.webmanifest')).json();for(const icon of manifest.icons)assert((await fetch(icon.src)).ok,'설치 아이콘 '+icon.sizes);
+ const reg=await navigator.serviceWorker.register('/sw.js');await navigator.serviceWorker.ready;const cache=await caches.open('moa-shell-v4');assert(!!await cache.match('/index.html'),'PWA 오프라인 HTML 캐시');assert(!!await cache.match('/src/vocabulary/storage.js'),'PWA 저장소 모듈 캐시');const manifest=await(await fetch('/manifest.webmanifest')).json();for(const icon of manifest.icons)assert((await fetch(icon.src)).ok,'설치 아이콘 '+icon.sizes);
  const database=await s.db();database.close();
  lines.push('DONE. 저장소 연결 종료 후 페이지를 다시 열어 데이터 유지 확인 가능.');document.querySelector('#report').textContent=lines.join('\n');
 }catch(e){document.querySelector('#report').textContent=lines.join('\n')+'\nFAIL '+e.stack;}
+</script><h2>실제 기기 음성 검수</h2><div id="speech-buttons"></div><pre id="speech-log"></pre><script type="module">
+import {speakWord} from '/src/ui/speech.js';
+for(const [language,headword,reading] of [['es','casa',''],['ja','食べる','たべる'],['zh','你好',''],['en','apple','']]){const b=document.createElement('button');b.textContent=language+' 발음 검사';b.onclick=()=>speakWord({id:language,language,headword,reading},state=>document.querySelector('#speech-log').textContent+=language+': '+state+'\n',error=>document.querySelector('#speech-log').textContent+='ERROR '+error+'\n');document.querySelector('#speech-buttons').append(b)}
 </script></body></html>
