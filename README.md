@@ -2,6 +2,8 @@
 
 스페인어·일본어·중국어·영어를 네이버 사전에서 검색하고 필요한 뜻만 담는 개인용 모바일 단어장입니다. 사용자 계정 없이 이 기기의 IndexedDB에 저장합니다.
 
+**[웹앱 바로 열기](https://moa-vocab.moschus1.chatgpt.site)** · [GitHub 소스](https://github.com/moschus1-alt/moa-vocab) · [검수 결과](QA.md)
+
 ## 실행
 
 Node.js 22 이상이 필요합니다. 런타임 외 별도 의존성은 없습니다.
