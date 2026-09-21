@@ -1,0 +1,19 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>모아 실제 브라우저 검증</title><body><h1>IndexedDB · 백업 · 복습 · PWA 검증</h1><p>별도 테스트 포트에서 실행하며 실제 네이버 응답을 사용합니다.</p><pre id="report">검증 중…</pre><script type="module">
+import * as s from '/src/vocabulary/storage.js';import {rate,makeQueue} from '/src/study/scheduler.js';
+const lines=[],assert=(condition,label)=>{if(!condition)throw new Error(label);lines.push('PASS '+label);document.querySelector('#report').textContent=lines.join('\n')};
+try {
+ const before=await s.all();if(before.length)throw new Error('비어 있는 테스트 전용 origin에서 실행해 주세요.');
+ const response=await fetch('/api/search?language=es&query=casa');const data=await response.json();assert(response.ok&&data.results?.length,'실제 네이버 casa 응답');
+ let w=data.results[0];w.senses=w.senses.slice(0,1);let result=await s.save(w);w=result.word;assert((await s.all()).length===1,'IndexedDB 저장');
+ let duplicate=await s.save({...w,id:crypto.randomUUID(),query:'casas'});assert(duplicate.duplicate&&(await s.all()).length===1,'중복 방지 및 검색어 병합');
+ w=duplicate.word;w.senses[0].meaning+=' (검증)';w.study=rate(w.study,'unknown',Date.now());await s.save(w,{replace:true});assert((await s.all())[0].study.lastRating==='unknown','수정 및 몰라요 기록');
+ w.study=rate(w.study,'unsure',Date.now());await s.save(w,{replace:true});assert((await s.all())[0].study.lastRating==='unsure','헷갈려요 기록');
+ w.study=rate(w.study,'know',Date.now());await s.save(w,{replace:true});let saved=await s.all();assert(saved[0].study.interval===1,'알아요 다음 날 복습');assert(makeQueue(saved,{from:1,to:1,dueOnly:true}).length===0,'아직 복습할 때가 아닌 단어 제외');
+ const backup=JSON.parse(JSON.stringify(await s.backup()));await s.remove(w.id);assert((await s.all()).length===0,'삭제');await s.restore(backup);saved=await s.all();assert(saved.length===1&&saved[0].study.reviews===3&&saved[0].senses[0].meaning.endsWith('(검증)'),'JSON 직렬화 후 뜻 및 복습 기록 복원');
+ await s.restore(backup);assert((await s.all()).length===1,'같은 백업 재복원 중복 방지');
+ try{await s.restore({app:'moa-vocab',version:1,words:[...backup.words,{language:'xx'}]})}catch{}assert((await s.all()).length===1,'잘못된 백업 전체 거절 및 기존 데이터 유지');
+ const reg=await navigator.serviceWorker.register('/sw.js');await navigator.serviceWorker.ready;const cache=await caches.open('moa-shell-v1');assert(!!await cache.match('/index.html'),'PWA 오프라인 HTML 캐시');assert(!!await cache.match('/src/vocabulary/storage.js'),'PWA 저장소 모듈 캐시');const manifest=await(await fetch('/manifest.webmanifest')).json();for(const icon of manifest.icons)assert((await fetch(icon.src)).ok,'설치 아이콘 '+icon.sizes);
+ const database=await s.db();database.close();
+ lines.push('DONE. 저장소 연결 종료 후 페이지를 다시 열어 데이터 유지 확인 가능.');document.querySelector('#report').textContent=lines.join('\n');
+}catch(e){document.querySelector('#report').textContent=lines.join('\n')+'\nFAIL '+e.stack;}
+</script></body></html>
