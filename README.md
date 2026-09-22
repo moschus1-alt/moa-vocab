@@ -53,7 +53,24 @@ npm run build
 
 HTTPS 배포 또는 localhost에서 설치할 수 있습니다. Android 브라우저의 앱 설치, iPhone Safari 공유 → 홈 화면에 추가를 사용합니다. 처음 접속하여 서비스 워커 캐시 준비가 끝나면 저장된 단어장과 학습은 오프라인에서 열립니다. 실제 iOS/Android 기기에 설치하여 확인한 것은 아니며 데스크톱 Chrome 모바일 뷰와 설치 가능 이벤트/매니페스트/캐시는 별도로 검증합니다.
 
-## 배포
+## Vercel 배포
+
+Vercel Hobby 플랜에서 GitHub 저장소를 가져오면 정적 PWA와 `/api/search` Node.js Function이 함께 배포됩니다. 프로젝트 설정은 `vercel.json`에 포함되어 있습니다.
+
+1. Vercel에서 **Add New → Project**를 선택합니다.
+2. GitHub의 `moschus1-alt/moa-vocab` 저장소를 가져옵니다.
+3. 별도 설정을 바꾸지 않고 **Deploy**를 선택합니다.
+
+CLI로 배포할 수도 있습니다.
+
+```sh
+npx vercel
+npx vercel --prod
+```
+
+Hobby 플랜은 개인·비상업 프로젝트용 무료 플랜이며 사용량 한도가 적용됩니다. 네이버 사전이 Vercel 서버의 요청을 제한하거나 응답 구조를 바꾸면 검색이 중단될 수 있습니다.
+
+## 다른 배포 방식
 
 GitHub Pages는 정적 호스팅이라 네이버 프록시를 실행할 수 없습니다. 따라서 전체 앱은 서버 실행이 가능한 Sites 또는 Cloudflare Workers에 배포하는 구성을 제공합니다. 공개 GitHub 저장소는 소스 보관·수정 용도입니다.
 
