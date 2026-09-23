@@ -99,4 +99,3 @@ try{await refresh();render()}catch(e){app.innerHTML=`<div class="error" role="al
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>notice('오프라인 준비를 마치지 못했어요. 인터넷 연결 후 새로고침해 주세요.'));
 
 
-

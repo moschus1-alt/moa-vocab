@@ -33,4 +33,3 @@ export function courseRef(data, skill, selectedUnit) {
 export function matchesCourse(word, course, section, unit) {
   return (word?.courseRefs ?? []).some(ref => ref.course === course && ref.section === Number(section) && Number(unit) >= ref.unitFrom && Number(unit) <= ref.unitTo);
 }
-

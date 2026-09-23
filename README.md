@@ -114,4 +114,3 @@ Cloudflare 계정 로그인이 필요하며 `wrangler.jsonc`에 정적 파일 �
 
 브라우저 검증 화면은 `MOA_TEST=1 PORT=4174 npm run dev`로 별도 서버를 띄운 뒤 `/__test`에서 실행합니다(PowerShell에서는 `$env:MOA_TEST='1'; $env:PORT='4174'; npm run dev`). 이 전용 origin은 빈 상태에서 사용해야 하며 실제 네이버 결과로 테스트 단어를 만듭니다. 제품 서버에서는 이 경로가 열리지 않습니다.
 
-

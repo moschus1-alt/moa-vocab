@@ -74,4 +74,3 @@ for (const course of courses) {
   await writeFile(`public/data/duolingo-ko-${course.language}.json`, JSON.stringify(output), 'utf8');
   console.log(`${course.name}: ${actual[0]} skills, ${output.stats.units} units, ${actual[1]} lexemes.`);
 }
-

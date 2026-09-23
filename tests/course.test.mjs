@@ -38,4 +38,3 @@ test('multilingual course references survive validation and merge', () => {
     assert.equal(mergeWords(linked, validateWord({ ...base, courseRefs: [ref] })).courseRefs.length, 1);
   }
 });
-

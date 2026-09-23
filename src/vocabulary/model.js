@@ -25,4 +25,3 @@ export function parseBackup(value){
  return value.words.map(validateWord);
 }
 
-
