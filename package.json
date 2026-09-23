@@ -1,5 +1,6 @@
 {
   "name": "moa-vocab", "version": "1.0.0", "private": true, "type": "module",
-  "scripts": {"dev":"node server.mjs", "start":"node server.mjs", "build":"node scripts/build.mjs", "test":"node --test tests/core.test.mjs tests/speech.test.mjs tests/study-ui.test.mjs", "test:live":"node scripts/verify-live.mjs"},
+  "scripts": {"dev":"node server.mjs", "start":"node server.mjs", "build":"node scripts/build.mjs", "test":"node --test tests/core.test.mjs tests/course.test.mjs tests/speech.test.mjs tests/study-ui.test.mjs", "test:live":"node scripts/verify-live.mjs", "update:course":"node scripts/update-duome-course.mjs"},
   "engines":{"node":">=22"}
 }
+
