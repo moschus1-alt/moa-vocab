@@ -3,9 +3,23 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { findSkill, courseRef, matchesCourse } from '../src/course/duolingo.js';
 import { validateWord, mergeWords } from '../src/vocabulary/model.js';
+import { defaultSpanishWords } from '../src/course/default-vocabulary.js';
 
-const load = async language => JSON.parse(await readFile(new URL(`../public/data/duolingo-ko-${language}.json`, import.meta.url), 'utf8'));
+const load = async language => {
+ const data=JSON.parse(await readFile(new URL(`../public/data/duolingo-ko-${language}.json`, import.meta.url), 'utf8'));
+ if(language==='es')data.sections.push(...JSON.parse(await readFile(new URL('../public/data/duolingo-ko-es-part2.json', import.meta.url),'utf8')).sections);
+ return data;
+};
 const [es, ja, zh] = await Promise.all(['es', 'ja', 'zh'].map(load));
+
+test('Spanish defaults contain one selected Korean meaning per expression and preserve course placement', () => {
+ const defaults=defaultSpanishWords(es);
+ assert.equal(defaults.length,es.stats.distinct-1); // Chile/chile share a case-insensitive key.
+ assert.equal(es.sections.flatMap(s=>s.skills).reduce((n,s)=>n+s.meanings.length,0),es.stats.lexemes);
+ assert.equal(defaults.find(w=>w.headword==='agua').senses[0].meaning,'물');
+ assert.equal(defaults.find(w=>w.headword==='quiero').senses[0].meaning,'원해요');
+ assert.ok(defaults.every(w=>w.senses[0].meaning && validateWord(w).courseRefs.length));
+});
 
 test('course snapshots cover Spanish, Japanese and Chinese', () => {
   assert.deepEqual(es.stats, { sections: 8, units: 991, skills: 303, lexemes: 7114, distinct: 5364 });

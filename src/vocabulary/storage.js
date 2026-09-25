@@ -2,6 +2,17 @@ import {validateWord,mergeWords,parseBackup} from './model.js';
 let connection;
 export function db(){return connection??=new Promise((resolve,reject)=>{const r=indexedDB.open('moa-vocab',1);r.onupgradeneeded=()=>{const s=r.result.createObjectStore('words',{keyPath:'id'});s.createIndex('key','key',{unique:true})};r.onsuccess=()=>{r.result.onversionchange=()=>{r.result.close();connection=null};resolve(r.result)};r.onerror=()=>{connection=null;reject(new Error('기기 저장소를 열 수 없습니다. 브라우저의 저장소 권한을 확인해 주세요.'))};r.onblocked=()=>reject(new Error('다른 탭을 닫고 다시 시도해 주세요.'))})}
 export async function all(){const d=await db();return new Promise((res,rej)=>{const r=d.transaction('words').objectStore('words').getAll();r.onsuccess=()=>res(r.result.sort((a,b)=>a.createdAt-b.createdAt));r.onerror=()=>rej(r.error)})}
+export async function seedDefaults(incoming){
+ const d=await db();return new Promise((res,rej)=>{const tx=d.transaction('words','readwrite'),s=tx.objectStore('words');let added=0;
+ const q=s.getAll();q.onsuccess=()=>{const existing=new Map(q.result.map(w=>[w.key,w]));for(const raw of incoming){const w=validateWord(raw),old=existing.get(w.key);
+   if(old){ // Keep user-selected meanings, edits, and review state. Add missing course locations only.
+     const refs=validateWord({...old,courseRefs:[...(old.courseRefs||[]),...w.courseRefs]}).courseRefs;
+     if(refs.length!==(old.courseRefs||[]).length)s.put({...old,courseRefs:refs});
+   }else{existing.set(w.key,w);s.put(w);added++}
+ }};
+ tx.oncomplete=()=>res(added);tx.onabort=tx.onerror=()=>rej(new Error('기본 단어장을 저장하지 못했습니다.'));
+ });
+}
 export async function save(word,{replace=false}={}){const w=validateWord(word),d=await db();return new Promise((res,rej)=>{const tx=d.transaction('words','readwrite'),s=tx.objectStore('words');let result;const q=s.index('key').get(w.key);q.onsuccess=()=>{const old=q.result;if(old&&old.id!==w.id&&replace){tx.abort();return}const merged=old&&!replace?mergeWords(old,w):w;result={word:merged,duplicate:!!old&&!replace};s.put(merged)};tx.oncomplete=()=>res(result);tx.onabort=tx.onerror=()=>rej(new Error('저장하지 못했습니다. 같은 표제어가 이미 있거나 저장 공간이 부족할 수 있습니다.'))})}
 export async function remove(id){const d=await db();return new Promise((res,rej)=>{const t=d.transaction('words','readwrite');t.objectStore('words').delete(id);t.oncomplete=()=>res();t.onabort=t.onerror=()=>rej(new Error('삭제하지 못했습니다. 다시 시도해 주세요.'))})}
 export async function restore(value){const incoming=parseBackup(value),d=await db();return new Promise((res,rej)=>{const t=d.transaction('words','readwrite'),s=t.objectStore('words');let count=0;const q=s.getAll();q.onsuccess=()=>{const map=new Map(q.result.map(w=>[w.key,w])),ids=new Set(q.result.map(w=>w.id));for(let w of incoming){const old=map.get(w.key);if(old)w=mergeWords(old,w);else {if(ids.has(w.id))w={...w,id:crypto.randomUUID()};ids.add(w.id);count++}map.set(w.key,w)}for(const w of map.values())s.put(w)};t.oncomplete=()=>res(count);t.onabort=t.onerror=()=>rej(new Error('복원하지 못했습니다. 기존 단어는 변경되지 않았습니다.'))})}

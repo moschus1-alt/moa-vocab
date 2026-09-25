@@ -7,6 +7,13 @@ export async function loadCourse(language = 'es', fetcher = fetch) {
   const response = await fetcher(`./data/duolingo-ko-${language}.json`);
   if (!response.ok) throw new Error('듀오링고 과정별 단어 자료를 불러오지 못했습니다.');
   const data = await response.json();
+  if (language === 'es' && data.sections?.length === 4) {
+    const continuation = await fetcher('./data/duolingo-ko-es-part2.json');
+    if (!continuation.ok) throw new Error('스페인어 과정의 나머지 자료를 불러오지 못했습니다.');
+    const part = await continuation.json();
+    if (part.course !== data.course || part.sections?.length !== 4 || part.sections[0]?.number !== 5) throw new Error('스페인어 과정 자료가 서로 맞지 않습니다.');
+    data.sections.push(...part.sections);
+  }
   if (data?.course !== `duolingo-ko-${language}` || data?.language !== language || !Array.isArray(data.sections) || data.sections.length !== 8) throw new Error('듀오링고 과정별 단어 자료의 형식이 올바르지 않습니다.');
   if (fetcher === fetch) cache.set(language, data);
   return data;
