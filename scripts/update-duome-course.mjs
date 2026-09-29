@@ -3,6 +3,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 const STRUCTURE_URL = 'https://www.duolingodata.com/dat/esfko991.html';
 const args = new Set(process.argv.slice(2));
 const courses = [
+  { language: 'it', slug: 'it', name: '이탈리아어', title: '한국어 사용자를 위한 이탈리아어', counts: [10,30,30,60,250,250,200,200], expected: [310,6129,5653], structureSource: 'https://duolingodata.com/dat/itfko1030.html' },
   { language: 'es', slug: 'es', name: '스페인어', title: '한국어 사용자를 위한 스페인어', counts: [10, 31, 30, 60, 250, 250, 180, 180], expected: [303, 7114, 5364], structureSource: STRUCTURE_URL },
   { language: 'ja', slug: 'ja', name: '일본어', title: '한국어 사용자를 위한 일본어', counts: [10, 30, 30, 60, 260, 240, 200, 200], expected: [310, 5710, 5307] },
   { language: 'zh', slug: 'zs', name: '중국어', title: '한국어 사용자를 위한 중국어', counts: [10, 30, 30, 60, 255, 245, 200, 200], expected: [310, 6425, 5943] }
@@ -61,7 +62,7 @@ await mkdir('public/data', { recursive: true });
 const unitRows = parseUnits(await source(STRUCTURE_URL, '.tmp-course/es-units.html'));
 if (unitRows.length !== 991) throw new Error(`Expected 991 Spanish units, found ${unitRows.length}`);
 
-for (const course of courses) {
+for (const course of courses.filter(c => ![...args].some(a=>a.startsWith('--language=')) || args.has('--language='+c.language))) {
   const html = await source(course.source, `.tmp-course/${course.language}-skills.html`), skills = parseSkills(html, course, course.language === 'es' ? unitRows : []);
   const footer = html.match(/(\d+) lexemes\s*•\s*(\d+) distinct\s*•\s*(\d+) skills/);
   if (!footer) throw new Error(`${course.name}: summary counts were not found.`);

@@ -2,6 +2,7 @@ export const languages = {
   es: {name:'스페인어', dict:'esko', origin:'https://dict.naver.com', path:'/eskodict/'},
   ja: {name:'일본어', dict:'jako', origin:'https://ja.dict.naver.com', path:'/'},
   zh: {name:'중국어', dict:'zhko', origin:'https://zh.dict.naver.com', path:'/'},
+  it: {name:'이탈리아어', dict:'itko', origin:'https://dict.naver.com', path:'/itkodict/'},
   en: {name:'영어', dict:'enko', origin:'https://en.dict.naver.com', path:'/'}
 };
 export function clean(value) {
@@ -39,7 +40,7 @@ export function parseNaver(data,lang,query) {
     let source=sourceURL(lang,query);
     if(/^#\/entry\/[a-z]+\/[a-zA-Z0-9]+$/.test(item.destinationLink??''))source=l.origin+l.path+item.destinationLink;
     return {entryId:String(item.entryId??''),language:lang,query,headword,reading,pronunciation,pos,kind:clean(item.expDictTypeForm)==='숙어'?'숙어':'단어',
-      lemma:headword,gender:lang==='es'?(/여성/.test(pos)?'여성':/남성/.test(pos)?'남성':''):'',
+      lemma:headword,gender:['es','it'].includes(lang)?(/여성/.test(pos)?'여성':/남성/.test(pos)?'남성':''):'',
       senses,example:example?.example||clean(related?.expExample1),translation:example?.translation||clean(related?.expExample2),
       source,provider:clean(item.sourceDictnameKO),fetchedAt:Date.now()};
   }).filter(x=>x.headword&&x.senses.length).sort((a,b)=>relevanceScore(a,query)-relevanceScore(b,query)).slice(0,16);

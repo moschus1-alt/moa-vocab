@@ -1,4 +1,4 @@
-export const LANGS={es:'스페인어',ja:'일본어',zh:'중국어',en:'영어'};
+export const LANGS={es:'스페인어',ja:'일본어',zh:'중국어',en:'영어',it:'이탈리아어'};
 const text=(v,max=4000)=>typeof v==='string'?v.trim().slice(0,max):'';
 export function identity(w){return [w.language,w.headword.normalize('NFC').toLocaleLowerCase(),(w.reading||'').normalize('NFC')].join('|')}
 export function validateWord(w){
@@ -8,7 +8,7 @@ export function validateWord(w){
  for(const k of ['headword','query','reading','pronunciation','pos','lemma','gender','example','translation','provider','entryId'])out[k]=text(w[k],['headword','query'].includes(k)?150:4000);
  out.kind=w.kind==='숙어'?'숙어':'단어';
  out.queries=[...new Set([out.query,...(Array.isArray(w.queries)?w.queries:[])].map(q=>text(q,150)).filter(Boolean))].slice(0,100);
- out.courseRefs=(Array.isArray(w.courseRefs)?w.courseRefs:[]).map(ref=>{const course=['duolingo-ko-es','duolingo-ko-ja','duolingo-ko-zh'].includes(ref?.course)?ref.course:'';return {course,language:course.slice(-2),section:Number(ref?.section),unitFrom:Number(ref?.unitFrom),unitTo:Number(ref?.unitTo),selectedUnit:Number(ref?.selectedUnit),skill:text(ref?.skill,100),goal:text(ref?.goal,200)}}).filter(ref=>ref.course&&Number.isInteger(ref.section)&&ref.section>=1&&ref.section<=8&&Number.isInteger(ref.unitFrom)&&Number.isInteger(ref.unitTo)&&ref.unitFrom>=1&&ref.unitTo>=ref.unitFrom&&Number.isInteger(ref.selectedUnit)&&ref.selectedUnit>=ref.unitFrom&&ref.selectedUnit<=ref.unitTo).filter((ref,index,all)=>index===all.findIndex(other=>other.course===ref.course&&other.section===ref.section&&other.unitFrom===ref.unitFrom&&other.unitTo===ref.unitTo)).slice(0,100);
+ out.courseRefs=(Array.isArray(w.courseRefs)?w.courseRefs:[]).map(ref=>{const course=['duolingo-ko-es','duolingo-ko-ja','duolingo-ko-zh','duolingo-ko-it'].includes(ref?.course)?ref.course:'';return {course,language:course.slice(-2),section:Number(ref?.section),unitFrom:Number(ref?.unitFrom),unitTo:Number(ref?.unitTo),selectedUnit:Number(ref?.selectedUnit),skill:text(ref?.skill,100),goal:text(ref?.goal,200)}}).filter(ref=>ref.course&&Number.isInteger(ref.section)&&ref.section>=1&&ref.section<=8&&Number.isInteger(ref.unitFrom)&&Number.isInteger(ref.unitTo)&&ref.unitFrom>=1&&ref.unitTo>=ref.unitFrom&&Number.isInteger(ref.selectedUnit)&&ref.selectedUnit>=ref.unitFrom&&ref.selectedUnit<=ref.unitTo).filter((ref,index,all)=>index===all.findIndex(other=>other.course===ref.course&&other.section===ref.section&&other.unitFrom===ref.unitFrom&&other.unitTo===ref.unitTo)).slice(0,100);
  out.source=/^https:\/\/(?:[a-z]+\.)?dict\.naver\.com\//.test(w.source??'')?w.source:'';
  out.id=text(w.id,100)||crypto.randomUUID();
  const num=(v,f)=>Number.isFinite(v)&&v>=0?v:f;

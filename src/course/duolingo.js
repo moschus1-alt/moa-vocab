@@ -1,4 +1,4 @@
-export const COURSE_LANGUAGES = { es: '스페인어', ja: '일본어', zh: '중국어' };
+export const COURSE_LANGUAGES = { es: '스페인어', ja: '일본어', zh: '중국어', it: '이탈리아어' };
 const cache = new Map();
 
 export async function loadCourse(language = 'es', fetcher = fetch) {

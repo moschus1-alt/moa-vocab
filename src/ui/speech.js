@@ -1,4 +1,4 @@
-const locales = { es: 'es-ES', ja: 'ja-JP', zh: 'zh-CN', en: 'en-US' };
+const locales = { es: 'es-ES', ja: 'ja-JP', zh: 'zh-CN', en: 'en-US', it: 'it-IT' };
 let active = null;
 
 export function speechText(word) {
