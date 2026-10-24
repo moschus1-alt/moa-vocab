@@ -1,0 +1,1894 @@
+{
+  "version": 1,
+  "provider": "Duome",
+  "course": "duolingo-ko-es",
+  "language": "es",
+  "source": "https://duome.eu/vocabulary/ko/es/skills",
+  "sourceFetchedAt": "2026-09-29",
+  "reviewedAt": "2026-10-24",
+  "section": 1,
+  "units": [
+    {
+      "number": 1,
+      "title": "카페에서 주문하기"
+    },
+    {
+      "number": 2,
+      "title": "인사하고 작별 인사하기"
+    },
+    {
+      "number": 3,
+      "title": "\"ser de\"를 사용해 출신지 말하기"
+    },
+    {
+      "number": 4,
+      "title": "가족과 친구 소개하기"
+    },
+    {
+      "number": 5,
+      "title": "성격 묘사하기"
+    },
+    {
+      "number": 6,
+      "title": "\"estar\"를 사용해 위치 말하기"
+    },
+    {
+      "number": 7,
+      "title": "도시의 장소에 대해 이야기하기"
+    },
+    {
+      "number": 8,
+      "title": "언어에 대해 이야기하기"
+    },
+    {
+      "number": 9,
+      "title": "\"Hace\"를 사용해 날씨 묘사하기"
+    },
+    {
+      "number": 10,
+      "title": "과일 사기"
+    }
+  ],
+  "entries": [
+    {
+      "headword": "agua",
+      "meaning": "물",
+      "sourceMeaning": "물",
+      "mode": "speech",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "café",
+      "meaning": "커피",
+      "sourceMeaning": "커피",
+      "mode": "speech",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "chao",
+      "meaning": "작별 인사",
+      "sourceMeaning": "안녕",
+      "mode": "choice",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "con azúcar",
+      "meaning": "설탕을 넣은",
+      "sourceMeaning": "설탕과 함께",
+      "mode": "choice",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "con hielo",
+      "meaning": "얼음을 넣은",
+      "sourceMeaning": "얼음과 함께",
+      "mode": "choice",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "con leche",
+      "meaning": "우유가 들어간",
+      "sourceMeaning": "우유가 들어간",
+      "mode": "choice",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "gracias",
+      "meaning": "감사합니다",
+      "sourceMeaning": "감사합니다",
+      "mode": "speech",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "helado",
+      "meaning": "아이스크림",
+      "sourceMeaning": "아이스크림",
+      "mode": "speech",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "hola",
+      "meaning": "안녕하세요",
+      "sourceMeaning": "안녕하세요",
+      "mode": "speech",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "o",
+      "meaning": "또는",
+      "sourceMeaning": "또는",
+      "mode": "choice",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "pan",
+      "meaning": "빵",
+      "sourceMeaning": "빵",
+      "mode": "speech",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "perfecto",
+      "meaning": "완벽한",
+      "sourceMeaning": "괜찮아요",
+      "mode": "choice",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "por favor",
+      "meaning": "부탁합니다",
+      "sourceMeaning": "주세요",
+      "mode": "choice",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "quieres",
+      "meaning": "너는 원한다",
+      "sourceMeaning": "원하니",
+      "mode": "choice",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "quiero",
+      "meaning": "나는 원한다",
+      "sourceMeaning": "원해요",
+      "mode": "choice",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "sándwich",
+      "meaning": "샌드위치",
+      "sourceMeaning": "샌드위치",
+      "mode": "speech",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "taco",
+      "meaning": "타코",
+      "sourceMeaning": "타코",
+      "mode": "speech",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "té",
+      "meaning": "차(음료)",
+      "sourceMeaning": "차",
+      "mode": "speech",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "un",
+      "meaning": "하나의(남성 명사 앞)",
+      "sourceMeaning": "하나의",
+      "mode": "choice",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "vaso de",
+      "meaning": "한 잔의",
+      "sourceMeaning": "한 잔의",
+      "mode": "choice",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "y",
+      "meaning": "그리고",
+      "sourceMeaning": "그리고",
+      "mode": "choice",
+      "units": [
+        1
+      ]
+    },
+    {
+      "headword": "bien",
+      "meaning": "잘, 좋게",
+      "sourceMeaning": "좋다",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "bienvenida",
+      "meaning": "환영합니다(여성에게)",
+      "sourceMeaning": "환영합니다",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "bienvenido",
+      "meaning": "환영합니다(남성에게)",
+      "sourceMeaning": "환영합니다",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "buenos días",
+      "meaning": "아침 인사",
+      "sourceMeaning": "안녕하세요",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "ella",
+      "meaning": "그녀",
+      "sourceMeaning": "그녀",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "es",
+      "meaning": "그/그녀는 ~이다",
+      "sourceMeaning": "이다",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "hasta luego",
+      "meaning": "나중에 봐요",
+      "sourceMeaning": "안녕",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "jugo",
+      "meaning": "주스",
+      "sourceMeaning": "주스",
+      "mode": "speech",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "mi mejor amiga",
+      "meaning": "가장 친한 여자 친구",
+      "sourceMeaning": "가장 친한 친구",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "mi mejor amigo",
+      "meaning": "가장 친한 남자 친구",
+      "sourceMeaning": "가장 친한 친구",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "mucho gusto",
+      "meaning": "만나서 반갑습니다",
+      "sourceMeaning": "반갑습니다",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "qué tal",
+      "meaning": "어떻게 지내요?",
+      "sourceMeaning": "안녕",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "soy",
+      "meaning": "나는 ~이다",
+      "sourceMeaning": "나는 ~이다",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "yo",
+      "meaning": "나",
+      "sourceMeaning": "나",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "él",
+      "meaning": "그(남성)",
+      "sourceMeaning": "그",
+      "mode": "choice",
+      "units": [
+        2
+      ]
+    },
+    {
+      "headword": "Alemania",
+      "meaning": "독일",
+      "sourceMeaning": "독일",
+      "mode": "speech",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "buenas tardes",
+      "meaning": "오후 인사",
+      "sourceMeaning": "안녕하세요",
+      "mode": "choice",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "compañero de cuarto",
+      "meaning": "룸메이트",
+      "sourceMeaning": "룸메이트",
+      "mode": "choice",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "de dónde eres",
+      "meaning": "어디 출신인가요?",
+      "sourceMeaning": "어디에서 왔어요?",
+      "mode": "choice",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "encantada",
+      "meaning": "만나서 반갑습니다(여성 화자)",
+      "sourceMeaning": "반갑습니다",
+      "mode": "choice",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "encantado",
+      "meaning": "만나서 반갑습니다(남성 화자)",
+      "sourceMeaning": "반가워",
+      "mode": "choice",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "eres de",
+      "meaning": "너는 ~출신이다",
+      "sourceMeaning": "출신이니",
+      "mode": "choice",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "es de",
+      "meaning": "그/그녀는 ~출신이다",
+      "sourceMeaning": "의 것",
+      "mode": "choice",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "mamá",
+      "meaning": "엄마",
+      "sourceMeaning": "엄마",
+      "mode": "speech",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "mi",
+      "meaning": "나의",
+      "sourceMeaning": "우리",
+      "mode": "choice",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "no",
+      "meaning": "아니요",
+      "sourceMeaning": "아닌",
+      "mode": "choice",
+      "units": [
+        3,
+        6
+      ]
+    },
+    {
+      "headword": "soy de",
+      "meaning": "나는 ~출신이다",
+      "sourceMeaning": "출신입니다",
+      "mode": "choice",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "sí",
+      "meaning": "네(긍정)",
+      "sourceMeaning": "네",
+      "mode": "choice",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "tú",
+      "meaning": "너",
+      "sourceMeaning": "너",
+      "mode": "choice",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "verdad",
+      "meaning": "사실, 진실",
+      "sourceMeaning": "맞지",
+      "mode": "choice",
+      "units": [
+        3
+      ]
+    },
+    {
+      "headword": "amiga",
+      "meaning": "여자 친구(친구 관계)",
+      "sourceMeaning": "친구",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "amigo",
+      "meaning": "남자 친구(친구 관계)",
+      "sourceMeaning": "친구",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "compañera de trabajo",
+      "meaning": "여자 직장 동료",
+      "sourceMeaning": "동료",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "compañero de trabajo",
+      "meaning": "남자 직장 동료",
+      "sourceMeaning": "동료",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "en realidad",
+      "meaning": "사실은",
+      "sourceMeaning": "사실은",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "hermana",
+      "meaning": "여자 형제",
+      "sourceMeaning": "언니",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "hermano",
+      "meaning": "남자 형제",
+      "sourceMeaning": "형제",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "hija",
+      "meaning": "딸",
+      "sourceMeaning": "딸",
+      "mode": "speech",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "hijo",
+      "meaning": "아들",
+      "sourceMeaning": "자식",
+      "mode": "speech",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "quiere",
+      "meaning": "그/그녀는 원한다",
+      "sourceMeaning": "어요",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "solamente",
+      "meaning": "오직, 단지",
+      "sourceMeaning": "단지",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "también",
+      "meaning": "또한",
+      "sourceMeaning": "또한",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "tengo",
+      "meaning": "나는 가지고 있다",
+      "sourceMeaning": "나는 가지고 있다",
+      "mode": "choice",
+      "units": [
+        4,
+        6
+      ]
+    },
+    {
+      "headword": "tía",
+      "meaning": "이모, 고모",
+      "sourceMeaning": "고모",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "tío",
+      "meaning": "삼촌, 외삼촌",
+      "sourceMeaning": "삼촌",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "una",
+      "meaning": "하나의(여성 명사 앞)",
+      "sourceMeaning": "하나의",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "uno",
+      "meaning": "하나(숫자)",
+      "sourceMeaning": "일",
+      "mode": "choice",
+      "units": [
+        4
+      ]
+    },
+    {
+      "headword": "abuela",
+      "meaning": "할머니",
+      "sourceMeaning": "할머니",
+      "mode": "speech",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "abuelo",
+      "meaning": "할아버지",
+      "sourceMeaning": "할아버지",
+      "mode": "speech",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "como yo",
+      "meaning": "나처럼",
+      "sourceMeaning": "나 같은",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "creo que",
+      "meaning": "내 생각에는",
+      "sourceMeaning": "생각해요",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "cómo es",
+      "meaning": "어떤 사람인가요?",
+      "sourceMeaning": "어떻습니까",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "en general",
+      "meaning": "일반적으로",
+      "sourceMeaning": "일반적으로",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "esposa",
+      "meaning": "아내",
+      "sourceMeaning": "아내",
+      "mode": "speech",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "esposo",
+      "meaning": "남편",
+      "sourceMeaning": "배우자",
+      "mode": "speech",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "graciosa",
+      "meaning": "재미있는(여성형)",
+      "sourceMeaning": "웃기네",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "gracioso",
+      "meaning": "재미있는(남성형)",
+      "sourceMeaning": "웃기",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "no crees",
+      "meaning": "그렇게 생각하지 않나요?",
+      "sourceMeaning": "그렇지 않나요?",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "novia",
+      "meaning": "여자 친구(연인)",
+      "sourceMeaning": "여자친구",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "novio",
+      "meaning": "남자 친구(연인)",
+      "sourceMeaning": "남자친구",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "papá",
+      "meaning": "아빠",
+      "sourceMeaning": "아빠",
+      "mode": "speech",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "pero",
+      "meaning": "하지만",
+      "sourceMeaning": "하지만",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "seria",
+      "meaning": "진지한(여성형)",
+      "sourceMeaning": "진지한",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "serio",
+      "meaning": "진지한(남성형)",
+      "sourceMeaning": "진지한",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "simpática",
+      "meaning": "상냥한(여성형)",
+      "sourceMeaning": "친절하다",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "simpático",
+      "meaning": "상냥한(남성형)",
+      "sourceMeaning": "친절한",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "tu",
+      "meaning": "너의",
+      "sourceMeaning": "너의",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "tímida",
+      "meaning": "수줍은(여성형)",
+      "sourceMeaning": "수줍었",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "tímido",
+      "meaning": "수줍은(남성형)",
+      "sourceMeaning": "수줍은",
+      "mode": "choice",
+      "units": [
+        5
+      ]
+    },
+    {
+      "headword": "aquí",
+      "meaning": "여기",
+      "sourceMeaning": "여기",
+      "mode": "choice",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "ay",
+      "meaning": "아이고!",
+      "sourceMeaning": "아이구",
+      "mode": "choice",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "cargador",
+      "meaning": "충전기",
+      "sourceMeaning": "충전기",
+      "mode": "speech",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "cartera",
+      "meaning": "지갑",
+      "sourceMeaning": "지갑",
+      "mode": "speech",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "chaqueta",
+      "meaning": "재킷",
+      "sourceMeaning": "재킷",
+      "mode": "speech",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "dónde",
+      "meaning": "어디",
+      "sourceMeaning": "어디",
+      "mode": "choice",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "está",
+      "meaning": "그/그녀는 ~에 있다",
+      "sourceMeaning": "있다",
+      "mode": "choice",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "gorra",
+      "meaning": "챙 달린 모자",
+      "sourceMeaning": "모자",
+      "mode": "choice",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "libro",
+      "meaning": "책",
+      "sourceMeaning": "책",
+      "mode": "speech",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "maleta",
+      "meaning": "여행 가방",
+      "sourceMeaning": "여행 가방",
+      "mode": "speech",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "mochila",
+      "meaning": "배낭",
+      "sourceMeaning": "배낭",
+      "mode": "speech",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "no encuentro",
+      "meaning": "찾을 수 없어요",
+      "sourceMeaning": "찾을 수 없어",
+      "mode": "choice",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "nuevo",
+      "meaning": "새로운(남성형)",
+      "sourceMeaning": "새",
+      "mode": "choice",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "pasaporte",
+      "meaning": "여권",
+      "sourceMeaning": "여권",
+      "mode": "speech",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "pues",
+      "meaning": "그러면, 음",
+      "sourceMeaning": "그러면",
+      "mode": "choice",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "reloj",
+      "meaning": "시계",
+      "sourceMeaning": "시계",
+      "mode": "speech",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "suéter",
+      "meaning": "스웨터",
+      "sourceMeaning": "스웨터",
+      "mode": "speech",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "tableta",
+      "meaning": "태블릿",
+      "sourceMeaning": "태블릿",
+      "mode": "speech",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "tranquila",
+      "meaning": "진정해요(여성에게)",
+      "sourceMeaning": "진정해",
+      "mode": "choice",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "tranquilo",
+      "meaning": "진정해요(남성에게)",
+      "sourceMeaning": "진정해",
+      "mode": "choice",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "vestido",
+      "meaning": "드레스",
+      "sourceMeaning": "드레스",
+      "mode": "speech",
+      "units": [
+        6
+      ]
+    },
+    {
+      "headword": "banco",
+      "meaning": "은행, 벤치",
+      "sourceMeaning": "은행",
+      "mode": "choice",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "barrio",
+      "meaning": "동네",
+      "sourceMeaning": "동네",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "cafetería",
+      "meaning": "카페",
+      "sourceMeaning": "카페",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "centro comercial",
+      "meaning": "쇼핑몰",
+      "sourceMeaning": "쇼핑몰",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "cerca",
+      "meaning": "가까이",
+      "sourceMeaning": "가까이",
+      "mode": "choice",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "ciudad",
+      "meaning": "도시",
+      "sourceMeaning": "도시",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "en",
+      "meaning": "~안에, ~에서",
+      "sourceMeaning": "~에",
+      "mode": "choice",
+      "units": [
+        7,
+        9
+      ]
+    },
+    {
+      "headword": "estacionamiento",
+      "meaning": "주차장",
+      "sourceMeaning": "주차 공간",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "estación de metro",
+      "meaning": "지하철역",
+      "sourceMeaning": "지하철역",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "hay",
+      "meaning": "~이 있다",
+      "sourceMeaning": "있다",
+      "mode": "choice",
+      "units": [
+        7,
+        10
+      ]
+    },
+    {
+      "headword": "hotel",
+      "meaning": "호텔",
+      "sourceMeaning": "호텔",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "librería",
+      "meaning": "서점",
+      "sourceMeaning": "서점",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "mira",
+      "meaning": "봐요",
+      "sourceMeaning": "구경",
+      "mode": "choice",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "museo",
+      "meaning": "박물관",
+      "sourceMeaning": "박물관",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "no hay",
+      "meaning": "~이 없다",
+      "sourceMeaning": "없니",
+      "mode": "choice",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "oye",
+      "meaning": "이봐요",
+      "sourceMeaning": "야",
+      "mode": "choice",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "panadería",
+      "meaning": "빵집",
+      "sourceMeaning": "빵집",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "parque",
+      "meaning": "공원",
+      "sourceMeaning": "공원",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "por aquí",
+      "meaning": "이 근처에",
+      "sourceMeaning": "가까운",
+      "mode": "choice",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "pueblo",
+      "meaning": "마을",
+      "sourceMeaning": "마을",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "teatro",
+      "meaning": "극장",
+      "sourceMeaning": "극장",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "tienda",
+      "meaning": "가게",
+      "sourceMeaning": "가게",
+      "mode": "speech",
+      "units": [
+        7
+      ]
+    },
+    {
+      "headword": "alemán",
+      "meaning": "독일어",
+      "sourceMeaning": "독일어",
+      "mode": "speech",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "arte",
+      "meaning": "미술, 예술",
+      "sourceMeaning": "미술",
+      "mode": "choice",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "casa",
+      "meaning": "집",
+      "sourceMeaning": "집",
+      "mode": "speech",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "escuela",
+      "meaning": "학교",
+      "sourceMeaning": "학교",
+      "mode": "speech",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "español",
+      "meaning": "스페인어",
+      "sourceMeaning": "스페인어",
+      "mode": "speech",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "estudias",
+      "meaning": "너는 공부한다",
+      "sourceMeaning": "공부하지",
+      "mode": "choice",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "estudio",
+      "meaning": "나는 공부한다",
+      "sourceMeaning": "관찰",
+      "mode": "choice",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "francés",
+      "meaning": "프랑스어",
+      "sourceMeaning": "프랑스어",
+      "mode": "speech",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "genial",
+      "meaning": "멋진",
+      "sourceMeaning": "멋져",
+      "mode": "choice",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "guau",
+      "meaning": "와!",
+      "sourceMeaning": "와",
+      "mode": "choice",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "hablar",
+      "meaning": "말하다",
+      "sourceMeaning": "말하다",
+      "mode": "choice",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "hablas",
+      "meaning": "너는 말한다",
+      "sourceMeaning": "하네",
+      "mode": "choice",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "inglés",
+      "meaning": "영어",
+      "sourceMeaning": "영어",
+      "mode": "speech",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "italiano",
+      "meaning": "이탈리아어",
+      "sourceMeaning": "이탈리아어",
+      "mode": "speech",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "muy bien",
+      "meaning": "아주 잘",
+      "sourceMeaning": "아주 잘",
+      "mode": "choice",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "música",
+      "meaning": "음악",
+      "sourceMeaning": "음악",
+      "mode": "speech",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "por la mañana",
+      "meaning": "아침에",
+      "sourceMeaning": "오전",
+      "mode": "choice",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "por la noche",
+      "meaning": "밤에",
+      "sourceMeaning": "밤",
+      "mode": "choice",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "portugués",
+      "meaning": "포르투갈어",
+      "sourceMeaning": "포르투갈어",
+      "mode": "speech",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "un poco de",
+      "meaning": "약간의",
+      "sourceMeaning": "조금",
+      "mode": "choice",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "y tú",
+      "meaning": "너는?",
+      "sourceMeaning": "너는",
+      "mode": "choice",
+      "units": [
+        8
+      ]
+    },
+    {
+      "headword": "abrigo",
+      "meaning": "외투",
+      "sourceMeaning": "두꺼운 옷",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "ahora",
+      "meaning": "지금",
+      "sourceMeaning": "지금",
+      "mode": "choice",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "allí",
+      "meaning": "저기",
+      "sourceMeaning": "저기",
+      "mode": "choice",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "buen tiempo",
+      "meaning": "좋은 날씨",
+      "sourceMeaning": "날씨가 좋다",
+      "mode": "choice",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "calor",
+      "meaning": "더위",
+      "sourceMeaning": "고온",
+      "mode": "choice",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "diciembre",
+      "meaning": "12월",
+      "sourceMeaning": "12월",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "enero",
+      "meaning": "1월",
+      "sourceMeaning": "1월",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "frío",
+      "meaning": "추위",
+      "sourceMeaning": "추위",
+      "mode": "choice",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "hace",
+      "meaning": "그/그녀는 한다",
+      "sourceMeaning": "한다",
+      "mode": "choice",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "hoy",
+      "meaning": "오늘",
+      "sourceMeaning": "오늘",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "invierno",
+      "meaning": "겨울",
+      "sourceMeaning": "겨울",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "julio",
+      "meaning": "7월",
+      "sourceMeaning": "7월",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "marzo",
+      "meaning": "3월",
+      "sourceMeaning": "3월",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "mucho",
+      "meaning": "많이",
+      "sourceMeaning": "많이",
+      "mode": "choice",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "no hace",
+      "meaning": "~하지 않는다",
+      "sourceMeaning": "않아요",
+      "mode": "choice",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "octubre",
+      "meaning": "10월",
+      "sourceMeaning": "10월",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "otoño",
+      "meaning": "가을",
+      "sourceMeaning": "가을",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "país",
+      "meaning": "나라",
+      "sourceMeaning": "나라",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "primavera",
+      "meaning": "봄",
+      "sourceMeaning": "봄",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "septiembre",
+      "meaning": "9월",
+      "sourceMeaning": "9월",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "sol",
+      "meaning": "태양",
+      "sourceMeaning": "맑다",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "traje de baño",
+      "meaning": "수영복",
+      "sourceMeaning": "수영복",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "uso",
+      "meaning": "나는 사용한다",
+      "sourceMeaning": "풍습",
+      "mode": "choice",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "verano",
+      "meaning": "여름",
+      "sourceMeaning": "여름",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "viento",
+      "meaning": "바람",
+      "sourceMeaning": "바람",
+      "mode": "speech",
+      "units": [
+        9
+      ]
+    },
+    {
+      "headword": "bolsa",
+      "meaning": "봉지(단수)",
+      "sourceMeaning": "봉지",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "bolsas",
+      "meaning": "봉지들(복수)",
+      "sourceMeaning": "봉지",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "botella de",
+      "meaning": "한 병의",
+      "sourceMeaning": "병의",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "cuánto cuesta",
+      "meaning": "얼마인가요?(단수)",
+      "sourceMeaning": "얼마예요",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "cuánto cuestan",
+      "meaning": "얼마인가요?(복수)",
+      "sourceMeaning": "얼마입니까",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "dos",
+      "meaning": "둘",
+      "sourceMeaning": "2",
+      "mode": "speech",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "durazno",
+      "meaning": "복숭아(단수)",
+      "sourceMeaning": "복숭아",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "duraznos",
+      "meaning": "복숭아들(복수)",
+      "sourceMeaning": "복숭아",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "este",
+      "meaning": "이것, 이(남성 단수)",
+      "sourceMeaning": "이",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "kilo de",
+      "meaning": "1킬로그램의",
+      "sourceMeaning": "킬로그램의",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "kilos de",
+      "meaning": "여러 킬로그램의",
+      "sourceMeaning": "킬로그램의",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "mango",
+      "meaning": "망고(단수)",
+      "sourceMeaning": "망고",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "mangos",
+      "meaning": "망고들(복수)",
+      "sourceMeaning": "망고",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "mercado",
+      "meaning": "시장(단수)",
+      "sourceMeaning": "시장",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "mercados",
+      "meaning": "시장들(복수)",
+      "sourceMeaning": "시장",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "más",
+      "meaning": "더 많이",
+      "sourceMeaning": "더 많다",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "naranja",
+      "meaning": "오렌지(단수)",
+      "sourceMeaning": "오렌지",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "naranjas",
+      "meaning": "오렌지들(복수)",
+      "sourceMeaning": "오렌지",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "necesitas",
+      "meaning": "너는 필요하다",
+      "sourceMeaning": "없잖아",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "necesito",
+      "meaning": "나는 필요하다",
+      "sourceMeaning": "필요합",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "piña",
+      "meaning": "파인애플(단수)",
+      "sourceMeaning": "파인애플",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "piñas",
+      "meaning": "파인애플들(복수)",
+      "sourceMeaning": "파인애플",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "sandía",
+      "meaning": "수박(단수)",
+      "sourceMeaning": "수박",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "sandías",
+      "meaning": "수박들(복수)",
+      "sourceMeaning": "수박",
+      "mode": "choice",
+      "units": [
+        10
+      ]
+    },
+    {
+      "headword": "tres",
+      "meaning": "셋",
+      "sourceMeaning": "셋",
+      "mode": "speech",
+      "units": [
+        10
+      ]
+    }
+  ]
+}

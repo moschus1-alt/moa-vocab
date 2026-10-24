@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {presentationFor,choicesFor,pictureMarkup} from '../src/study/presentation.js';
 test('reviewed concrete words have pictures; broad meanings and unknown words use choices',()=>{
  for(const headword of ['café','té'])assert.equal(presentationFor({headword}).kind,'picture');
- assert.equal(presentationFor({headword:'hola'}).kind,'speech');
+ assert.equal(presentationFor({headword:'hola',lessonMode:'speech'}).kind,'speech');
  for(const headword of ['un','quiero','por favor','con leche','unknown'])assert.equal(presentationFor({headword}).kind,'choice');
  assert.match(pictureMarkup(presentationFor({headword:'café'})),/role="img"/);
 });

@@ -33,5 +33,5 @@ export function gradeAnswer(word, direction, input) {
 export function gradeAttempt(word,direction,input,failures=0){
  const graded=gradeAnswer(word,direction,input);
  const nextFailures=failures+(graded.correct?0:1);
- return {...graded,input,failures:nextFailures,finished:graded.correct||nextFailures>=4,retriesLeft:Math.max(0,4-nextFailures)};
+ return {...graded,input,failures:nextFailures,finished:graded.correct||nextFailures>=3,retriesLeft:Math.max(0,3-nextFailures)};
 }

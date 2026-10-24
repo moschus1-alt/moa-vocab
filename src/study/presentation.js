@@ -7,7 +7,7 @@ const pictures={
 export function presentationFor(word){
  const term=word.headword.normalize('NFC').trim().toLowerCase();
  if(pictures[term])return {kind:'picture',...pictures[term]};
- if(term==='hola')return {kind:'speech'};
+ if(word.lessonMode==='speech')return {kind:'speech'};
  return {kind:'choice'};
 }
 export function pictureMarkup(presentation){
@@ -16,6 +16,6 @@ export function pictureMarkup(presentation){
 }
 export function choicesFor(word,words,rng=Math.random){
  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
- const other=[...new Set(words.filter(w=>w.language===word.language&&w.headword!==word.headword).map(w=>w.headword))];
+ const other=[...new Set(words.filter(w=>w.language===word.language&&w.headword!==word.headword&&(!w.studyPrompt||!word.studyPrompt||w.studyPrompt!==word.studyPrompt)).map(w=>w.headword))];
  return shuffle([word.headword,...shuffle(other).slice(0,3)]);
 }

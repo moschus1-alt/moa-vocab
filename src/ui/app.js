@@ -13,8 +13,9 @@ import {COURSE_LANGUAGES,loadCourse,findSkill,courseRef,matchesCourse} from '../
 import {importCourse,finishReview} from '../course/import-vocabulary.js';
 let pendingImports=[],importErrors=[];
 import {selectCourseWords} from '../study/course-range.js';
-import {loadVerifiedLesson,prepareVerifiedLesson,selectVerifiedWords} from '../study/verified-lesson.js';
-let verifiedData=null,verifiedError='',verifiedBusy=false;
+import {loadDuomeStudy,prepareDuomeStudy,selectDuomeWords} from '../study/duome-study.js';
+let duomeData=null,duomeError='',duomeBusy=false;
+let duomeUnit=1,duomeCount=10;try{const p=JSON.parse(localStorage.getItem('moa-duome-study-ui'));if(Number.isInteger(p?.unit)&&p.unit>=0&&p.unit<=10)duomeUnit=p.unit;if(Number.isInteger(p?.count)&&p.count>=1&&p.count<=204)duomeCount=p.count;}catch{}
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let words=[],language='es',query='',results=[],searchError='',searched=false,busy=false,session=null,installEvent=null,studySettings=loadStudyPreferences(),courseLanguage='es',courseData=null,courseError='',courseBusy=false,courseSection=1,courseUnit=1,pendingCourseRef=null,courseAutoSearch=false,listPage=1,studyCourseData=null,studyCourseError='',studyCourseBusy=false;
 const app=$('#app'),dialog=$('#dialog');
@@ -70,35 +71,31 @@ function rememberStudySettings(){studySettings=saveStudyPreferences({
  courseUnit:Number($('#study-course-unit')?.value??studySettings.courseUnit),
  courseScope:$('#study-course-scope')?.value??studySettings.courseScope
 })}
-function renderVerifiedStudy(){
- const selected=verifiedData?selectVerifiedWords(words,verifiedData):[];
- app.innerHTML=title('VERIFIED LESSON','실제 레슨 확인 단어','명확한 뜻·그림은 스페인어로 말하고, 여러 표현이 가능한 뜻은 객관식으로 골라요.')+
- `<form id="verified-form" class="study-settings">`+
- (verifiedData?`<div class="course-context"><strong>${esc(verifiedData.label)}</strong><p>${esc(verifiedData.coverage)}</p><p>${verifiedData.challengeCount}개 문제 응답에서 추출한 ${verifiedData.vocabulary.length}개 단어·표현 중 ${selected.length}개 저장됨 · ${esc(verifiedData.observedAt)} 확인</p><p>정답 및 새 학습 단어만 포함하며, 오답 보기만 등장한 단어는 제외했어요. 화면 대조는 첫 문제만 했어요.</p><p>${verifiedData.vocabulary.map(x=>esc(x.headword)).join(' · ')}</p></div><label class="check-line"><input id="due-only" type="checkbox" ${studySettings.dueOnly?'checked':''}>복습할 때가 된 단어만</label><p>커피·차는 그림, 인사는 말하기, 나머지 표현은 객관식으로 연습해요. 말하기는 마이크가 자동으로 켜지고 즉시 채점해요. 처음 틀리면 세 번 더 도전할 수 있어요.</p><div id="study-error" class="form-error" role="alert"></div><button class="primary wide" ${selected.length?'':'disabled'}>학습 시작</button>${selected.length?'':'<p>확인된 단어를 단어장에서 삭제했다면 다시 저장해 주세요.</p>'}`:
- verifiedError?`<div class="error" role="alert">${esc(verifiedError)} <button type="button" id="retry-verified">다시 시도</button></div>`:'<p role="status">실제 레슨 확인 자료를 불러오고 있어요…</p>')+'</form>';
- if(verifiedError)$('#retry-verified').onclick=()=>{verifiedError='';renderStudyV2()};
- if(!verifiedData){
-  if(!verifiedBusy&&!verifiedError){verifiedBusy=true;loadVerifiedLesson().then(async data=>{await prepareVerifiedLesson(data,storage,localStorage);await refresh();verifiedData=data}).catch(e=>verifiedError=e.message).finally(()=>{verifiedBusy=false;if(location.hash==='#study')renderStudyV2()})}
-  return;
- }
- $('#due-only').onchange=rememberStudySettings;
- $('#verified-form').onsubmit=e=>{e.preventDefault();try{
-  rememberStudySettings();const queue=makeQueue(selected,{random:true,dueOnly:studySettings.dueOnly});
-  if(!queue.length)throw Error('지금 복습할 단어가 없어요. 복습 조건을 해제해 주세요.');
-  session={mode:'quiz',direction:'ko-foreign',verifiedWords:selected,queue,total:queue.length,done:0,turn:0,result:null,repeated:new Set(),ratings:{know:0,unsure:0,unknown:0}};renderStudyV2();
+function renderDuomeStudy(){
+ const selected=duomeData?selectDuomeWords(words,duomeData,duomeUnit):[];
+ app.innerHTML=title('DUOME COURSE','듀오링고 과정별 단어','Duome 자료로 한국어 뜻·그림 → 스페인어를 연습해요.')+
+ '<form id="duome-form" class="study-settings">'+(duomeData?`<div class="course-context"><strong>검수한 섹션 1 · 유닛 1–10</strong><p>${duomeData.entries.length}개 단어·표현 · Duome 과정별 참고 목록입니다.</p><p>한국어 풀이를 다듬어 말하기·객관식으로 분류했어요. 나머지 섹션은 아직 퀴즈에 포함하지 않았어요.</p></div><label>학습 유닛<select id="duome-unit"><option value="0" ${duomeUnit===0?'selected':''}>섹션 1 전체</option>${duomeData.units.map(u=>`<option value="${u.number}" ${duomeUnit===u.number?'selected':''}>${u.number}. ${esc(u.title)}</option>`).join('')}</select></label><p>현재 범위에서 학습 가능한 단어 ${selected.length}개</p><label>이번 학습 문제 수<input id="duome-count" type="number" min="1" max="${Math.max(1,selected.length)}" value="${Math.min(duomeCount,Math.max(1,selected.length))}" required></label><label class="check-line"><input id="due-only" type="checkbox" ${studySettings.dueOnly?'checked':''}>복습할 때가 된 단어만</label><p>명확한 뜻은 말하기, 여러 표현이 가능한 뜻은 객관식이에요. 말하기는 자동 마이크·즉시 채점합니다. 세 번 틀리거나 인식하지 못하면 정답을 보여주고 넘겨요.</p><div id="study-error" class="form-error" role="alert"></div><button class="primary wide" ${selected.length?'':'disabled'}>학습 시작</button><p class="muted">출처: <a href="https://duome.eu/vocabulary/ko/es/skills" target="_blank" rel="noopener noreferrer">Duome</a> · 원문 확보 ${esc(duomeData.sourceFetchedAt)} · 풀이 검수 ${esc(duomeData.reviewedAt)}</p>`:duomeError?`<div class="error" role="alert">${esc(duomeError)} <button type="button" id="retry-duome">다시 시도</button></div>`:'<p role="status">Duome 학습 자료를 준비하고 있어요…</p>')+'</form>';
+ if(duomeError)$('#retry-duome').onclick=()=>{duomeError='';renderStudyV2()};
+ if(!duomeData){if(!duomeBusy&&!duomeError){duomeBusy=true;loadDuomeStudy().then(async data=>{await prepareDuomeStudy(data,storage,localStorage);await refresh();duomeData=data}).catch(e=>duomeError=e.message).finally(()=>{duomeBusy=false;if(location.hash==='#study')renderStudyV2()})}return;}
+ const remember=()=>{duomeUnit=Number($('#duome-unit').value);duomeCount=Number($('#duome-count').value);localStorage.setItem('moa-duome-study-ui',JSON.stringify({unit:duomeUnit,count:duomeCount}));rememberStudySettings();};
+ $('#duome-unit').onchange=()=>{remember();renderStudyV2()};$('#duome-count').onchange=remember;$('#due-only').onchange=remember;
+ $('#duome-form').onsubmit=e=>{e.preventDefault();try{
+  remember();const queue=makeQueue(selected,{random:true,dueOnly:studySettings.dueOnly}).slice(0,duomeCount);
+  if(!queue.length)throw Error('지금 복습할 단어가 없어요. 범위나 복습 조건을 바꿔 주세요.');
+  session={mode:'quiz',direction:'ko-foreign',studyWords:selected,queue,total:queue.length,done:0,turn:0,result:null,repeated:new Set(),ratings:{know:0,unsure:0,unknown:0}};renderStudyV2();
  }catch(e){$('#study-error').textContent=e.message}};
 }
 function renderStudyV2(){
  if(session){renderSessionV2();return}
- renderVerifiedStudy();
+ renderDuomeStudy();
 }
 async function finishStudyItem(word,rating){
  word=words.find(w=>w.id===word.id)??word;
- try{const next={...word,study:rate(word.study,rating),updatedAt:Date.now()};await storage.save(next,{replace:true});await refresh();session.queue.shift();if(rating!=='know'&&!session.repeated.has(word.id)){session.queue.push(word.id);session.repeated.add(word.id)}session.done++;session.turn++;session.ratings[rating]++;session.flipped=false;session.result=null;session.attempt=null;session.currentDirection=null;session.choices=null;session.wrongChoices=[];renderSessionV2()}catch(e){notice(e.message);renderSessionV2()}
+ try{const next={...word,study:rate(word.study,rating),updatedAt:Date.now()};await storage.save(next,{replace:true});await refresh();session.queue.shift();if(rating!=='know'&&!session.result?.skip&&!session.repeated.has(word.id)){session.queue.push(word.id);session.repeated.add(word.id)}session.done++;session.turn++;session.ratings[rating]++;session.flipped=false;session.result=null;session.attempt=null;session.currentDirection=null;session.choices=null;session.wrongChoices=[];renderSessionV2()}catch(e){notice(e.message);renderSessionV2()}
 }
 function renderSessionV2(){
  if(!session.queue.length){app.innerHTML=title('WELL DONE','오늘의 학습을 마쳤어요','학습 결과를 저장하고 다음 복습에 반영했어요.')+`<div class="completion"><span class="complete-mark">✓</span><h2>${session.done}번의 기억 연습</h2><div class="rating-summary"><span>알아요 <b>${session.ratings.know}</b></span><span>헷갈려요 <b>${session.ratings.unsure}</b></span><span>몰라요 <b>${session.ratings.unknown}</b></span></div><button id="study-again" class="primary wide">학습 설정으로</button></div>`;$('#study-again').onclick=()=>{session=null;renderStudyV2()};return}
- const w=session.verifiedWords?.find(w=>w.id===session.queue[0])??words.find(w=>w.id===session.queue[0]);if(!w){session.queue.shift();renderSessionV2();return}
+ const w=session.studyWords?.find(w=>w.id===session.queue[0])??words.find(w=>w.id===session.queue[0]);if(!w){session.queue.shift();renderSessionV2();return}
  const progress=session.done/(session.done+session.queue.length)*100;
  renderQuizSession(w,progress);
 }
@@ -106,11 +103,12 @@ function renderQuizSession(w,progress){
  recognition.cancel();stopSpeech();
  const direction='ko-foreign',card=quizCard(w,direction),result=session.result,attempt=session.attempt,presentation=presentationFor(w);
  if(presentation.kind==='choice'){renderChoiceSession(w,progress,card);return;}
- app.innerHTML=`<div class="session-header"><button id="end-study">학습 나가기</button><span>남은 문제 ${session.queue.length}개</span></div><div class="progress"><div style="width:${progress}%"></div></div><div class="quiz-card"><span class="tag">한국어 → 스페인어 말하기</span><p class="quiz-instruction">${presentation.kind==='picture'?'그림을 보고 스페인어로 말하세요':'뜻을 보고 스페인어로 말하세요'}</p>${presentation.kind==='picture'?pictureMarkup(presentation):`<h2 class="quiz-prompt" lang="ko">${esc(card.prompt)}</h2>`}${attempt?`<p class="muted">인식한 말: <span lang="es">${esc(attempt.input)}</span></p>`:''}${!result?`${attempt?`<p class="quiz-result wrong" role="status">아직 정답이 아니에요. ${attempt.retriesLeft}번 더 말해 보세요.</p>`:''}<p id="voice-status" role="status" aria-live="polite">마이크를 준비하고 있어요…</p><button type="button" id="voice-answer" class="wide">마이크 시작</button><p class="muted">말이 인식되면 바로 채점해요. 처음에는 마이크 권한을 허용해 주세요. 음성은 브라우저 인식 서비스로 전송될 수 있으며 모아는 녹음하지 않습니다.</p>`:`<div class="quiz-result ${result.correct?'correct':'wrong'}" role="status"><strong>${result.correct?'정답이에요!':'아쉬워요. 정답을 확인하세요.'}</strong><span lang="es">${esc(result.answerLabel)}</span></div><button id="hear-answer" class="wide">스페인어 발음 듣기</button><button id="next-question" class="primary wide">다음 문제</button>`}</div><p class="muted center">인식된 스페인어 단어로 채점하며 발음 점수를 매기지는 않습니다.</p>`;
+ app.innerHTML=`<div class="session-header"><button id="end-study">학습 나가기</button><span>남은 문제 ${session.queue.length}개</span></div><div class="progress"><div style="width:${progress}%"></div></div><div class="quiz-card"><span class="tag">한국어 → 스페인어 말하기</span><p class="quiz-instruction">${presentation.kind==='picture'?'그림을 보고 스페인어로 말하세요':'뜻을 보고 스페인어로 말하세요'}</p>${presentation.kind==='picture'?pictureMarkup(presentation):`<h2 class="quiz-prompt" lang="ko">${esc(card.prompt)}</h2>`}${attempt?`<p class="muted">인식한 말: <span lang="es">${esc(attempt.input)}</span></p>`:''}${!result?`${attempt?`<p class="quiz-result wrong" role="status">아직 정답이 아니에요. ${attempt.retriesLeft}번 더 말해 보세요.</p>`:''}<p id="voice-status" role="status" aria-live="polite">마이크를 준비하고 있어요…</p><button type="button" id="voice-answer" class="wide">마이크 시작</button><p class="muted">말이 인식되면 바로 채점해요. 처음에는 마이크 권한을 허용해 주세요. 음성은 브라우저 인식 서비스로 전송될 수 있으며 모아는 녹음하지 않습니다.</p>`:`<div class="quiz-result ${result.correct?'correct':'wrong'}" role="status"><strong>${result.correct?'정답이에요!':'아쉬워요. 정답을 확인하세요.'}</strong><span lang="es">${esc(result.answerLabel)}</span>${result.reason?`<p>${esc(result.reason)}</p>`:''}</div><button id="hear-answer" class="wide">스페인어 발음 듣기</button><button id="next-question" class="primary wide">다음 문제</button>`}</div><p class="muted center">인식된 스페인어 단어로 채점하며 발음 점수를 매기지는 않습니다.</p>`;
  $('#end-study').onclick=()=>{recognition.cancel();stopSpeech();session=null;renderStudyV2()};
  if(result){
   $('#hear-answer').onclick=()=>speakWord(w,()=>{},notice);
   $('#next-question').onclick=()=>{stopSpeech();$('#next-question').disabled=true;finishStudyItem(w,result.correct?(result.failures?'unsure':'know'):'unknown');};
+  if(result.skip)autoPass();
   return;
  }
  let listening=false,submitted=false;
@@ -118,33 +116,34 @@ function renderQuizSession(w,progress){
  const status=(text,active)=>{if(!button.isConnected)return;listening=active;statusElement.textContent=text;button.textContent=active?'마이크 잠시 끄기':'마이크 다시 시작';};
  const start=()=>{
   if(!button.isConnected||document.hidden||submitted)return;
-  stopSpeech();recognition.start({language:'es',onStatus:status,onText:text=>{
+  stopSpeech();recognition.start({language:'es',onStatus:status,onFailure:message=>{if(!button.isConnected||submitted)return;submitted=true;session.attempt={input:'인식되지 않음',failures:0};session.result={correct:false,skip:true,answerLabel:card.answerLabel,input:'인식되지 않음',reason:message};renderQuizSession(w,progress);},onText:text=>{
    if(submitted||!button.isConnected||document.hidden)return;
    submitted=true;
    session.attempt=gradeAttempt(w,direction,text,session.attempt?.failures||0);
-   session.result=session.attempt.finished?session.attempt:null;
+   session.result=session.attempt.finished?{...session.attempt,skip:!session.attempt.correct}:null;
    renderQuizSession(w,progress);
   }});
  };
  button.onclick=()=>{if(listening&&button.textContent==='마이크 잠시 끄기'){recognition.cancel();status('마이크를 껐어요. 다시 시작을 누르면 듣습니다.',false);}else start();};
- if(!recognition.supported){status('이 브라우저에서는 음성인식을 지원하지 않아요. 음성인식을 지원하는 브라우저에서 열어 주세요.',false);button.disabled=true;}
+ if(!recognition.supported){session.result={correct:false,skip:true,answerLabel:card.answerLabel,reason:'이 브라우저는 음성인식을 지원하지 않아요.'};renderQuizSession(w,progress);}
  else queueMicrotask(start);
 }
 function renderChoiceSession(w,progress,card){
  recognition.cancel();stopSpeech();
  const result=session.result,attempt=session.attempt;
- session.choices??=choicesFor(w,session.verifiedWords??[]);
+ session.choices??=choicesFor(w,session.studyWords??[]);
  session.wrongChoices??=[];
- app.innerHTML=`<div class="session-header"><button id="end-study">학습 나가기</button><span>남은 문제 ${session.queue.length}개</span></div><div class="progress"><div style="width:${progress}%"></div></div><div class="quiz-card"><span class="tag">한국어 → 스페인어 객관식</span><p class="quiz-instruction">뜻에 맞는 스페인어 표현을 고르세요</p><h2 class="quiz-prompt" lang="ko">${esc(card.prompt)}</h2><p class="muted">여러 표현이 가능한 뜻이라 보기에서 골라요.</p>${attempt&&!result?`<p class="quiz-result wrong" role="status">아직 정답이 아니에요. ${attempt.retriesLeft}번 더 골라 보세요.</p>`:''}<div class="choice-options">${session.choices.map((choice,i)=>`<button type="button" class="wide" data-choice="${i}" lang="es" ${result||session.wrongChoices.includes(choice)?'disabled':''}>${esc(choice)}</button>`).join('')}</div>${result?`<div class="quiz-result ${result.correct?'correct':'wrong'}" role="status"><strong>${result.correct?'정답이에요!':'정답을 확인하세요.'}</strong><span lang="es">${esc(result.answerLabel)}</span></div><button id="hear-answer" class="wide">스페인어 발음 듣기</button><button id="next-question" class="primary wide">다음 문제</button>`:''}</div>`;
+ app.innerHTML=`<div class="session-header"><button id="end-study">학습 나가기</button><span>남은 문제 ${session.queue.length}개</span></div><div class="progress"><div style="width:${progress}%"></div></div><div class="quiz-card"><span class="tag">한국어 → 스페인어 객관식</span><p class="quiz-instruction">뜻에 맞는 스페인어 표현을 고르세요</p><h2 class="quiz-prompt" lang="ko">${esc(card.prompt)}</h2><p class="muted">여러 표현이 가능한 뜻이라 보기에서 골라요.</p>${attempt&&!result?`<p class="quiz-result wrong" role="status">아직 정답이 아니에요. ${attempt.retriesLeft}번 더 골라 보세요.</p>`:''}<div class="choice-options">${session.choices.map((choice,i)=>`<button type="button" class="wide" data-choice="${i}" lang="es" ${result||session.wrongChoices.includes(choice)?'disabled':''}>${esc(choice)}</button>`).join('')}</div>${result?`<div class="quiz-result ${result.correct?'correct':'wrong'}" role="status"><strong>${result.correct?'정답이에요!':'정답을 확인하세요.'}</strong><span lang="es">${esc(result.answerLabel)}</span>${result.reason?`<p>${esc(result.reason)}</p>`:''}</div><button id="hear-answer" class="wide">스페인어 발음 듣기</button><button id="next-question" class="primary wide">다음 문제</button>`:''}</div>`;
  $('#end-study').onclick=()=>{session=null;renderStudyV2()};
  document.querySelectorAll('[data-choice]').forEach(button=>button.onclick=()=>{
   const input=session.choices[Number(button.dataset.choice)];
   session.attempt=gradeAttempt(w,'ko-foreign',input,session.attempt?.failures||0);
   if(!session.attempt.correct)session.wrongChoices.push(input);
-  session.result=session.attempt.finished?session.attempt:null;renderChoiceSession(w,progress,card);
+  session.result=session.attempt.finished?{...session.attempt,skip:!session.attempt.correct}:null;renderChoiceSession(w,progress,card);
  });
- if(result){$('#hear-answer').onclick=()=>speakWord(w,()=>{},notice);$('#next-question').onclick=()=>{stopSpeech();$('#next-question').disabled=true;finishStudyItem(w,result.correct?(result.failures?'unsure':'know'):'unknown')};}
+ if(result){$('#hear-answer').onclick=()=>speakWord(w,()=>{},notice);$('#next-question').onclick=()=>{stopSpeech();$('#next-question').disabled=true;finishStudyItem(w,result.correct?(result.failures?'unsure':'know'):'unknown')};if(result.skip)autoPass();}
 }
+function autoPass(){const button=$('#next-question');if(!button)return;button.insertAdjacentHTML('beforebegin','<p role="status">정답을 확인하세요. 잠시 후 다음 문제로 넘어갑니다.</p>');setTimeout(()=>{if(button.isConnected&&!document.hidden)button.click()},2800);}
 function openData(){recognition.cancel();
  $('#dialog-content').innerHTML=`<div class="dialog-top"><h2>단어장 보관하기</h2><button id="close-data" class="icon-button" aria-label="닫기">×</button></div><p>단어와 학습 기록은 이 브라우저에만 저장됩니다. 기기를 바꾸기 전에 백업해 주세요.</p><button id="export" class="primary wide">JSON 백업 다운로드</button><label class="file-label">백업 파일 복원<input id="import" type="file" accept="application/json,.json"></label><p class="muted">현재 단어를 유지하며 합칩니다. 같은 단어는 뜻을 합치고 현재 학습 기록을 유지합니다. 새 단어는 백업의 학습 기록을 가져옵니다.</p><div id="data-status" role="status"></div><hr><h3>홈 화면에 설치</h3><button id="install" ${installEvent?'':'hidden'} class="wide">모아 앱 설치</button><p class="muted">Android: 브라우저 메뉴의 ‘앱 설치’<br>iPhone: Safari 공유 메뉴 → ‘홈 화면에 추가’<br>한 번 열어둔 뒤에는 저장한 단어를 오프라인으로 학습할 수 있어요.</p>`;
  $('#close-data').onclick=()=>dialog.close();$('#export').onclick=async()=>{try{const b=await storage.backup(),url=URL.createObjectURL(new Blob([JSON.stringify(b,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=`moa-vocab-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#data-status').textContent=`${b.words.length}개 단어의 백업을 다운로드했어요.`}catch(e){$('#data-status').textContent=e.message}};

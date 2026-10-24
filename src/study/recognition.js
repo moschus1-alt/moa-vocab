@@ -4,11 +4,11 @@ export function createRecognition(env=globalThis){
  const clear=()=>{if(timer)env.clearTimeout(timer);timer=null;};
  function cancel(){const old=active;active=null;clear();if(old){old.onresult=old.onerror=old.onend=null;try{old.abort()}catch{}}}
  return {supported:!!Constructor&&env.isSecureContext!==false,cancel,
-  start({language,onText,onStatus}){
+  start({language,onText,onStatus,onFailure=()=>{}}){
    cancel();
-   if(!Constructor||env.isSecureContext===false){onStatus('이 브라우저에서는 음성인식을 사용할 수 없어요. 음성인식을 지원하는 브라우저에서 열어 주세요.',false);return;}
+   if(!Constructor||env.isSecureContext===false){const message='이 브라우저에서는 음성인식을 사용할 수 없어요.';onStatus(message,false);onFailure(message);return;}
    let r;
-   const finish=message=>{if(active!==r)return;cancel();onStatus(message,false);};
+   const finish=message=>{if(active!==r)return;cancel();onStatus(message,false);onFailure(message);};
    try{
     r=new Constructor();active=r;r.lang=({es:'es-ES',ko:'ko-KR',ja:'ja-JP',zh:'zh-CN',en:'en-US',it:'it-IT'})[language]||'es-ES';r.continuous=false;r.interimResults=false;r.maxAlternatives=1;
     r.onresult=e=>{if(active!==r)return;const result=e.results[e.resultIndex??0];if(!result?.isFinal)return;const text=String(result[0]?.transcript||'').trim();if(!text){finish('말소리를 인식하지 못했어요. 마이크를 다시 시작해 주세요.');return;}cancel();onStatus('인식했어요. 채점하고 있어요.',false);onText(text);};
@@ -17,7 +17,7 @@ export function createRecognition(env=globalThis){
     onStatus('듣고 있어요. 답을 말해 주세요.',true);
     timer=env.setTimeout(()=>finish('듣기를 종료했어요. 마이크를 다시 시작해 주세요.'),15000);
     r.start();
-   }catch{cancel();onStatus('음성인식을 시작하지 못했어요. 마이크 권한과 연결을 확인한 뒤 다시 시작해 주세요.',false);}
+   }catch{cancel();const message='음성인식을 시작하지 못했어요. 마이크 권한과 연결을 확인해 주세요.';onStatus(message,false);onFailure(message);}
   }
  };
 }
