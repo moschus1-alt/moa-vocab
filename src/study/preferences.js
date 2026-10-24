@@ -1,16 +1,18 @@
-const KEY = 'moa-study-preferences-v1';
-const defaults = Object.freeze({ language: 'es', order: 'random', mode: 'quiz', direction: 'mixed', dueOnly: false, source: 'saved', courseLanguage: 'es', courseSection: 1, courseUnit: 1, courseScope: 'unit' });
+const KEY = 'moa-study-preferences-v2';
+const defaults = Object.freeze({ language: 'es', order: 'random', mode: 'quiz', direction: 'mixed', dueOnly: false, source: 'verified', courseLanguage: 'es', courseSection: 1, courseUnit: 1, courseScope: 'unit' });
 
 export function loadStudyPreferences(storage = globalThis.localStorage) {
   try {
-    const value = JSON.parse(storage.getItem(KEY));
+    const current = storage.getItem(KEY);
+    const value = JSON.parse(current ?? storage.getItem('moa-study-preferences-v1'));
+    const migrateSpanish = !current && (value?.source === 'course' ? value?.courseLanguage === 'es' : value?.language === 'es');
     return {
       language: ['all', 'es', 'ja', 'zh', 'en', 'it'].includes(value?.language) ? value.language : defaults.language,
       order: 'random',
       mode: 'quiz',
       direction: 'mixed',
       dueOnly: typeof value?.dueOnly === 'boolean' ? value.dueOnly : defaults.dueOnly,
-      source: ['saved','course'].includes(value?.source) ? value.source : defaults.source,
+      source: migrateSpanish ? 'verified' : ['saved','course','verified'].includes(value?.source) ? value.source : defaults.source,
       courseLanguage: ['es','ja','zh','it'].includes(value?.courseLanguage) ? value.courseLanguage : defaults.courseLanguage,
       courseSection: Number.isInteger(value?.courseSection) && value.courseSection >= 1 && value.courseSection <= 8 ? value.courseSection : 1,
       courseUnit: Number.isInteger(value?.courseUnit) && value.courseUnit >= 1 && value.courseUnit <= 300 ? value.courseUnit : 1,

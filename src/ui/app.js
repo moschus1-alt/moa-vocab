@@ -12,6 +12,8 @@ import {COURSE_LANGUAGES,loadCourse,findSkill,courseRef,matchesCourse} from '../
 import {importCourse,finishReview} from '../course/import-vocabulary.js';
 let pendingImports=[],importErrors=[];
 import {selectCourseWords} from '../study/course-range.js';
+import {loadVerifiedLesson,prepareVerifiedLesson,selectVerifiedWords} from '../study/verified-lesson.js';
+let verifiedData=null,verifiedError='',verifiedBusy=false;
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let words=[],language='es',query='',results=[],searchError='',searched=false,busy=false,session=null,installEvent=null,studySettings=loadStudyPreferences(),courseLanguage='es',courseData=null,courseError='',courseBusy=false,courseSection=1,courseUnit=1,pendingCourseRef=null,courseAutoSearch=false,listPage=1,studyCourseData=null,studyCourseError='',studyCourseBusy=false;
 const app=$('#app'),dialog=$('#dialog');
@@ -67,8 +69,28 @@ function rememberStudySettings(){studySettings=saveStudyPreferences({
  courseUnit:Number($('#study-course-unit')?.value??studySettings.courseUnit),
  courseScope:$('#study-course-scope')?.value??studySettings.courseScope
 })}
+function renderVerifiedStudy(){
+ const selected=verifiedData?selectVerifiedWords(words,verifiedData):[];
+ app.innerHTML=title('VERIFIED LESSON','실제 레슨 확인 단어','한국어 ↔ 스페인어 · 문제와 방향을 무작위로 섞어요.')+
+ `<form id="verified-form" class="study-settings"><label>단어 선택<select id="study-source"><option value="verified" selected>듀오링고 실제 레슨 확인 단어</option><option value="saved">내 단어장 전체 (직접 선택)</option><option value="course">Duome 과정별 참고 단어</option></select></label>`+
+ (verifiedData?`<div class="course-context"><strong>${esc(verifiedData.label)}</strong><p>${esc(verifiedData.coverage)}</p><p>${verifiedData.challengeCount}개 문제 응답에서 추출한 ${verifiedData.vocabulary.length}개 단어·표현 중 ${selected.length}개 저장됨 · ${esc(verifiedData.observedAt)} 확인</p><p>정답 및 새 학습 단어만 포함하며, 오답 보기만 등장한 단어는 제외했어요. 화면 대조는 첫 문제만 했어요.</p><p>${verifiedData.vocabulary.map(x=>esc(x.headword)).join(' · ')}</p></div><label class="check-line"><input id="due-only" type="checkbox" ${studySettings.dueOnly?'checked':''}>복습할 때가 된 단어만</label><p>레슨에서 확인된 뜻으로 문제를 내고, 내가 저장한 다른 뜻도 정답으로 인정해요.</p><div id="study-error" class="form-error" role="alert"></div><button class="primary wide" ${selected.length?'':'disabled'}>학습 시작</button>${selected.length?'':'<p>확인된 단어를 단어장에서 삭제했다면 다시 저장해 주세요.</p>'}`:
+ verifiedError?`<div class="error" role="alert">${esc(verifiedError)} <button type="button" id="retry-verified">다시 시도</button></div>`:'<p role="status">실제 레슨 확인 자료를 불러오고 있어요…</p>')+'</form>';
+ $('#study-source').onchange=()=>{rememberStudySettings();renderStudyV2()};
+ if(verifiedError)$('#retry-verified').onclick=()=>{verifiedError='';renderStudyV2()};
+ if(!verifiedData){
+  if(!verifiedBusy&&!verifiedError){verifiedBusy=true;loadVerifiedLesson().then(async data=>{await prepareVerifiedLesson(data,storage,localStorage);await refresh();verifiedData=data}).catch(e=>verifiedError=e.message).finally(()=>{verifiedBusy=false;if(location.hash==='#study')renderStudyV2()})}
+  return;
+ }
+ $('#due-only').onchange=rememberStudySettings;
+ $('#verified-form').onsubmit=e=>{e.preventDefault();try{
+  rememberStudySettings();const queue=makeQueue(selected,{random:true,dueOnly:studySettings.dueOnly});
+  if(!queue.length)throw Error('지금 복습할 단어가 없어요. 복습 조건을 해제해 주세요.');
+  session={mode:'quiz',direction:'mixed',verifiedWords:selected,queue,total:queue.length,done:0,turn:0,result:null,repeated:new Set(),ratings:{know:0,unsure:0,unknown:0}};renderStudyV2();
+ }catch(e){$('#study-error').textContent=e.message}};
+}
 function renderStudyV2(){
  if(session){renderSessionV2();return}
+ if(studySettings.source==='verified'){renderVerifiedStudy();return}
  const courseMode=studySettings.source==='course';
  if(courseMode && studyCourseData?.language!==studySettings.courseLanguage){
   app.innerHTML=title('DAILY PRACTICE','과정별 학습','과정 자료를 불러오고 있어요.')+
@@ -82,8 +104,7 @@ function renderStudyV2(){
  const available=courseMode?selectCourseWords(words,studyCourseData,section.number,studySettings.courseUnit,studySettings.courseScope):filteredWords(studySettings.language);
  const due=available.filter(w=>(w.study?.due||0)<=Date.now()).length;
  const courseFields=courseMode?`<div class="course-picker"><label>과정 언어<select id="study-course-language">${Object.entries(COURSE_LANGUAGES).map(([key,name])=>`<option value="${key}" ${key===studySettings.courseLanguage?'selected':''}>${name}</option>`).join('')}</select></label><label>섹션<select id="study-course-section">${studyCourseData.sections.map(x=>`<option value="${x.number}" ${x.number===section.number?'selected':''}>섹션 ${x.number} · ${x.cefr}</option>`).join('')}</select></label><label>유닛<select id="study-course-unit">${Array.from({length:section.unitCount},(_,i)=>{const n=i+1,label=findSkill(studyCourseData,section.number,n)?.units.find(x=>x.number===n)?.title||'';return `<option value="${n}" ${n===studySettings.courseUnit?'selected':''}>${n}. ${esc(label)}</option>`}).join('')}</select></label></div><label>학습 범위<select id="study-course-scope"><option value="unit" ${studySettings.courseScope==='unit'?'selected':''}>선택 과정만</option><option value="through" ${studySettings.courseScope==='through'?'selected':''}>선택 과정까지 누적</option></select></label><p class="muted">같은 단어가 여러 유닛에 나와도 한 번만 학습합니다. 과정에 연결된 단어만 포함합니다.</p>`:'';
- app.innerHTML=title('DAILY PRACTICE','조금씩, 오래 기억하기','문제 순서와 방향을 무작위로 섞어요. 말하거나 입력해 답하세요.')+`<div class="study-summary"><div><span>${courseMode?'선택 범위':'모은 단어'}</span><strong>${available.length}</strong></div><div><span>복습 가능</span><strong>${due}</strong></div></div><form id="study-form" class="study-settings"><label>단어 선택<select id="study-source"><option value="saved" ${!courseMode?'selected':''}>단어장 저장 순서</option><option value="course" ${courseMode?'selected':''}>듀오링고 과정별</option></select></label>${courseFields}<div class="study-option-grid">${!courseMode?`<label>학습 언어${langSelect('study-language',studySettings.language,true)}</label>`:''}<p class="muted">외국어 ↔ 한국어 · 양방향 랜덤 문제</p></div>${!courseMode?`<div class="field-pair"><label>시작 번호<input id="range-from" type="number" min="1" max="${Math.max(1,available.length)}" value="1" required></label><label>끝 번호<input id="range-to" type="number" min="1" max="${Math.max(1,available.length)}" value="${Math.min(20,Math.max(1,available.length))}" required></label></div><p class="muted">선택한 언어의 저장 순서 기준입니다.</p>`:''}<label class="check-line"><input id="due-only" type="checkbox" ${studySettings.dueOnly?'checked':''}>복습할 때가 된 단어만</label><div id="study-error" class="form-error" role="alert"></div><button class="primary wide" ${!available.length?'disabled':''}>학습 시작</button></form><div class="review-guide"><p>여러 뜻 중 하나만 답해도 정답이에요. 처음 틀리면 세 번 더 도전할 수 있어요. 어려웠던 단어는 한 번 더 복습합니다.</p></div>`;
- if(!words.length)return;
+ app.innerHTML=title('DAILY PRACTICE','조금씩, 오래 기억하기','문제 순서와 방향을 무작위로 섞어요. 말하거나 입력해 답하세요.')+`<div class="study-summary"><div><span>${courseMode?'선택 범위':'모은 단어'}</span><strong>${available.length}</strong></div><div><span>복습 가능</span><strong>${due}</strong></div></div><form id="study-form" class="study-settings"><label>단어 선택<select id="study-source"><option value="verified">듀오링고 실제 레슨 확인 단어</option><option value="saved" ${!courseMode?'selected':''}>내 단어장 전체 (직접 선택)</option><option value="course" ${courseMode?'selected':''}>Duome 과정별 참고 단어</option></select></label>${courseFields}<div class="study-option-grid">${!courseMode?`<label>학습 언어${langSelect('study-language',studySettings.language,true)}</label>`:''}<p class="muted">외국어 ↔ 한국어 · 양방향 랜덤 문제</p></div>${!courseMode?`<div class="field-pair"><label>시작 번호<input id="range-from" type="number" min="1" max="${Math.max(1,available.length)}" value="1" required></label><label>끝 번호<input id="range-to" type="number" min="1" max="${Math.max(1,available.length)}" value="${Math.min(20,Math.max(1,available.length))}" required></label></div><p class="muted">선택한 언어의 저장 순서 기준입니다.</p>`:''}<label class="check-line"><input id="due-only" type="checkbox" ${studySettings.dueOnly?'checked':''}>복습할 때가 된 단어만</label><div id="study-error" class="form-error" role="alert"></div><button class="primary wide" ${!available.length?'disabled':''}>학습 시작</button></form><div class="review-guide"><p>여러 뜻 중 하나만 답해도 정답이에요. 처음 틀리면 세 번 더 도전할 수 있어요. 어려웠던 단어는 한 번 더 복습합니다.</p></div>`;
  $('#study-source').onchange=()=>{rememberStudySettings();renderStudyV2()};
  if($('#study-language'))$('#study-language').onchange=()=>{rememberStudySettings();renderStudyV2()};
  if(courseMode){
@@ -96,11 +117,12 @@ function renderStudyV2(){
  $('#study-form').onsubmit=e=>{e.preventDefault();try{rememberStudySettings();const selected=courseMode?selectCourseWords(words,studyCourseData,studySettings.courseSection,studySettings.courseUnit,studySettings.courseScope):filteredWords(studySettings.language),ids=makeQueue(selected,{from:courseMode?1:Number($('#range-from').value),to:courseMode?selected.length:Number($('#range-to').value),random:studySettings.order==='random',dueOnly:studySettings.dueOnly});if(!ids.length)throw new Error('이 범위에는 지금 복습할 단어나 숙어가 없어요.');session={mode:studySettings.mode,direction:studySettings.direction,queue:ids,total:ids.length,done:0,turn:0,flipped:false,result:null,repeated:new Set(),ratings:{know:0,unsure:0,unknown:0}};renderStudyV2()}catch(e){$('#study-error').textContent=e.message}};
 }
 async function finishStudyItem(word,rating){
+ word=words.find(w=>w.id===word.id)??word;
  try{const next={...word,study:rate(word.study,rating),updatedAt:Date.now()};await storage.save(next,{replace:true});await refresh();session.queue.shift();if(rating!=='know'&&!session.repeated.has(word.id)){session.queue.push(word.id);session.repeated.add(word.id)}session.done++;session.turn++;session.ratings[rating]++;session.flipped=false;session.result=null;session.attempt=null;session.currentDirection=null;renderSessionV2()}catch(e){notice(e.message);renderSessionV2()}
 }
 function renderSessionV2(){
  if(!session.queue.length){app.innerHTML=title('WELL DONE','오늘의 학습을 마쳤어요','학습 결과를 저장하고 다음 복습에 반영했어요.')+`<div class="completion"><span class="complete-mark">✓</span><h2>${session.done}번의 기억 연습</h2><div class="rating-summary"><span>알아요 <b>${session.ratings.know}</b></span><span>헷갈려요 <b>${session.ratings.unsure}</b></span><span>몰라요 <b>${session.ratings.unknown}</b></span></div><button id="study-again" class="primary wide">학습 설정으로</button></div>`;$('#study-again').onclick=()=>{session=null;renderStudyV2()};return}
- const w=words.find(w=>w.id===session.queue[0]);if(!w){session.queue.shift();renderSessionV2();return}
+ const w=session.verifiedWords?.find(w=>w.id===session.queue[0])??words.find(w=>w.id===session.queue[0]);if(!w){session.queue.shift();renderSessionV2();return}
  const progress=session.done/(session.done+session.queue.length)*100;
  renderQuizSession(w,progress);
 }
