@@ -7,6 +7,17 @@ export async function loadDuomeStudy(fetcher=fetch){
  if(ids.size!==data.units.length||data.entries.some(e=>!e.headword||!e.meaning||!['speech','choice'].includes(e.mode)||!e.units?.length||e.units.some(n=>!ids.has(n))))throw Error('과정 정보가 올바르지 않은 단어가 있어요.');
  return data;
 }
+// Repair only the known phonetic mistranslation. Keep user edits and review history.
+export async function repairCineGloss(storage,settings){
+ const key='moa-cine-gloss-correction-v1';
+ if(settings.getItem(key))return;
+ for(const word of await storage.all()){
+  if(word.language!=='es'||word.headword.normalize('NFC').toLocaleLowerCase()!=='cine')continue;
+  if(!word.senses.some(s=>s.meaning.trim()==='치네'))continue;
+  await storage.save({...word,senses:word.senses.map(s=>s.meaning.trim()==='치네'?{...s,meaning:'영화관, 영화'}:s),updatedAt:Date.now()},{replace:true});
+ }
+ settings.setItem(key,'1');
+}
 export async function prepareDuomeStudy(data,storage,settings){
  const key='moa-duome-study-all-v2';
  if(settings.getItem(key))return;
