@@ -1,4 +1,5 @@
 import {readFile,writeFile} from 'node:fs/promises';
+import {clearGlosses,choiceGlosses} from './duome-glosses.mjs';
 const source=JSON.parse(await readFile('public/data/duolingo-ko-es.json','utf8'));
 // Editorial review of section 1: keep source spellings and locations, while
 // replacing fragmented Korean glosses with self-contained learning prompts.
@@ -17,11 +18,30 @@ meanings.push('봉지(단수)|봉지들(복수)|한 병의|얼마인가요?(단�
 // Explicit terms (multi-word nouns included) instead of an ambiguity heuristic.
 const clearTerms='agua|café|gracias|helado|hola|pan|sándwich|taco|té|jugo|Alemania|mamá|hija|hijo|abuela|abuelo|esposa|esposo|papá|cargador|cartera|chaqueta|libro|maleta|mochila|pasaporte|reloj|suéter|tableta|vestido|barrio|cafetería|centro comercial|ciudad|estacionamiento|estación de metro|hotel|librería|museo|panadería|parque|pueblo|teatro|tienda|alemán|casa|escuela|español|francés|inglés|italiano|música|portugués|abrigo|diciembre|enero|hoy|invierno|julio|marzo|octubre|otoño|país|primavera|septiembre|sol|traje de baño|verano|viento|dos|tres';
 const clear=new Set(clearTerms.split('|').map(x=>x.toLowerCase())),entries=new Map();
-const units=source.sections[0].skills.map((skill,i)=>{
- const reviewed=meanings[i].split('|');if(reviewed.length!==skill.words.length)throw Error(`Review mismatch unit ${i+1}: ${reviewed.length}/${skill.words.length}`);
- skill.words.forEach((headword,j)=>{const key=headword.toLowerCase(),old=entries.get(key);if(old){old.units.push(i+1);return}entries.set(key,{headword,meaning:reviewed[j],sourceMeaning:skill.meanings[j],mode:clear.has(key)?'speech':'choice',units:[i+1]});});
- return {number:i+1,title:skill.goal};
-});
-const data={version:1,provider:'Duome',course:'duolingo-ko-es',language:'es',source:'https://duome.eu/vocabulary/ko/es/skills',sourceFetchedAt:source.meaningsFetchedAt,reviewedAt:'2026-10-24',section:1,units,entries:[...entries.values()]};
-await writeFile('public/data/duome-es-study.json',JSON.stringify(data,null,2)+'\n');
-console.log(JSON.stringify({words:data.entries.length,speech:data.entries.filter(x=>x.mode==='speech').length,choice:data.entries.filter(x=>x.mode==='choice').length}));
+const continuation=JSON.parse(await readFile('public/data/duolingo-ko-es-part2.json','utf8'));
+source.sections.push(...continuation.sections);
+const units=[];
+for(const section of source.sections)for(const skill of section.skills){
+ const reviewed=skill.number<=10?meanings[skill.number-1].split('|'):null;
+ if(reviewed&&reviewed.length!==skill.words.length)throw Error(`Review mismatch ${skill.number}`);
+ units.push({number:skill.number,section:section.number,unitFrom:skill.unitFrom,unitTo:skill.unitTo,title:skill.goal});
+ skill.words.forEach((headword,j)=>{
+  const key=headword.toLowerCase(),old=entries.get(key);
+  if(old){old.units.push(skill.number);return}
+  const sourceMeaning=skill.meanings[j],raw=skill.fullMeanings[j].split(/,\s*/).map(s=>s.trim()).filter(Boolean);
+  const explicit=reviewed?.[j]||clearGlosses[headword]||choiceGlosses[headword];
+  // Preserve upstream Korean wording for unreviewed entries. An infinitive can
+  // use an intact dictionary-form gloss already present in the source.
+  const whole=/[aei]r(se)?$/.test(headword)?raw.find(m=>m.length>2&&m.endsWith('다')&&m.length<30):null;
+  const meaning=explicit||whole||sourceMeaning;
+  if(!meaning)throw Error(`Missing meaning: ${headword}`);
+  entries.set(key,{headword,meaning,sourceMeaning,glossOrigin:explicit?'reviewed':'duome',mode:(reviewed?clear.has(key):!!clearGlosses[headword])?'speech':'choice',units:[skill.number]});
+ });
+}
+// If a Korean cue also describes another spelling, don't demand one spoken form.
+const cue=s=>s.replace(/\([^)]*\)/g,'').replace(/\s/g,'').normalize('NFC');
+const sameCue=new Map();for(const e of entries.values()){const k=cue(e.meaning);sameCue.set(k,(sameCue.get(k)||0)+1)}
+for(const e of entries.values())if(sameCue.get(cue(e.meaning))>1)e.mode='choice';
+const data={version:2,provider:'Duome',course:'duolingo-ko-es',language:'es',source:'https://duome.eu/vocabulary/ko/es/skills',sourceFetchedAt:source.meaningsFetchedAt,sourceVerifiedAt:'2026-10-24',reviewedAt:'2026-10-24',sections:source.sections.map(s=>({number:s.number,cefr:s.cefr,unitCount:s.unitCount})),units,entries:[...entries.values()]};
+await writeFile('public/data/duome-es-study.json',JSON.stringify(data)+'\n');
+console.log(JSON.stringify({words:data.entries.length,sections:data.sections.length,courses:units.length,speech:data.entries.filter(x=>x.mode==='speech').length,choice:data.entries.filter(x=>x.mode==='choice').length}));
