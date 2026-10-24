@@ -11,7 +11,8 @@ export function courseWords(data){
    const key=headword.normalize('NFC').toLocaleLowerCase();
    let word=map.get(key);
    if(!word){word={language:data.language,headword,query:headword,provider:'Duome',kind:headword.includes(' ')?'숙어':'단어',senses:[],courseRefs:[]};map.set(key,word);}
-   for(const meaning of skill.fullMeanings[i].split(/,\s*/).map(s=>s.trim()).filter(Boolean))if(!word.senses.some(s=>s.meaning===meaning))word.senses.push({meaning});
+   const meanings=headword.toLocaleLowerCase()==='cine'?['영화관','영화']:skill.fullMeanings[i].split(/,\s*/).map(s=>s.trim()).filter(Boolean);
+   for(const meaning of meanings)if(!word.senses.some(s=>s.meaning===meaning))word.senses.push({meaning});
    word.courseRefs.push(courseRef(data,skill,skill.unitFrom));
   });
  }
