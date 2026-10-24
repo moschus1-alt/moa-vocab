@@ -15,7 +15,7 @@ export function createRecognition(env=globalThis){
     r.onerror=e=>finish(({'not-allowed':'마이크 사용이 허용되지 않았어요. 브라우저 설정에서 허용한 뒤 마이크를 다시 시작해 주세요.','service-not-allowed':'이 브라우저에서 음성인식 서비스가 허용되지 않아요. 마이크 권한과 연결을 확인한 뒤 다시 시작해 주세요.','audio-capture':'마이크를 찾지 못했어요. 연결을 확인하거나 마이크 권한과 연결을 확인한 뒤 다시 시작해 주세요.','network':'음성인식 연결에 실패했어요. 인터넷 연결을 확인하거나 마이크 권한과 연결을 확인한 뒤 다시 시작해 주세요.','no-speech':'말소리를 듣지 못했어요. 마이크를 다시 시작해 주세요.','language-not-supported':'선택한 언어의 음성인식을 지원하지 않아요. 마이크 권한과 연결을 확인한 뒤 다시 시작해 주세요.'})[e.error]||'음성인식을 마치지 못했어요. 다시 시도하거나 마이크 권한과 연결을 확인한 뒤 다시 시작해 주세요.');
     r.onend=()=>finish('인식된 답이 없어요. 마이크를 다시 시작해 주세요.');
     onStatus('듣고 있어요. 답을 말해 주세요.',true);
-    timer=env.setTimeout(()=>finish('듣기를 종료했어요. 마이크를 다시 시작해 주세요.'),15000);
+    timer=env.setTimeout(()=>finish('듣기를 종료했어요. 마이크를 다시 시작해 주세요.'),35000);
     r.start();
    }catch{cancel();const message='음성인식을 시작하지 못했어요. 마이크 권한과 연결을 확인해 주세요.';onStatus(message,false);onFailure(message);}
   }
