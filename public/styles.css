@@ -72,3 +72,15 @@ main:has(.session-header) #next-question{font-size:clamp(12px,3.5vw,15px);paddin
  body:has(.session-header) nav{display:none}
  main:has(.session-header){padding-bottom:12px}
 }
+
+/* Voice retry / reveal action stays compact on narrow phones. */
+main:has(.session-header) #skip-voice{
+ background:transparent;
+ border:0;
+ color:var(--muted);
+ font-size:13px;
+ font-weight:500;
+ min-height:36px;
+ padding:5px;
+ margin-top:2px;
+}
