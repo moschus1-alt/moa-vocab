@@ -1,4 +1,4 @@
-const CACHE='moa-shell-v21';
+const CACHE='moa-shell-v22';
 const FILES=['./src/study/presentation.js','./src/study/duome-study.js','./data/duome-es-study.json','./','./index.html','./styles.css','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./data/duolingo-ko-es.json','./data/duolingo-ko-es-part2.json','./data/duolingo-ko-ja.json','./data/duolingo-ko-zh.json','./data/duolingo-ko-it.json','./src/vocabulary/meaning-review.js','./src/ui/app.js','./src/ui/speech.js','./src/course/duolingo.js','./src/course/default-vocabulary.js','./src/course/import-vocabulary.js','./src/dictionary/client.js','./src/vocabulary/model.js','./src/vocabulary/storage.js','./src/study/scheduler.js','./src/study/preferences.js','./src/study/course-range.js','./src/study/quiz.js','./src/study/recognition.js'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)))});
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('moa-shell-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
