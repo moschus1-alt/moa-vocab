@@ -11,7 +11,7 @@ import {COURSE_LANGUAGES,loadCourse,findSkill,courseRef,matchesCourse} from '../
 import {importCourse,finishReview} from '../course/import-vocabulary.js';
 let pendingImports=[],importErrors=[];
 import {selectCourseWords} from '../study/course-range.js';
-import {loadDuomeStudy,prepareDuomeStudy,selectDuomeWords,loadDuomePreferences} from '../study/duome-study.js';
+import {loadDuomeStudy,prepareDuomeStudy,selectDuomeWords,loadDuomePreferences,repairCineGloss} from '../study/duome-study.js';
 let duomeData=null,duomeError='',duomeBusy=false;
 let duomeUnit=1,duomeCount=10,duomeScope='unit';
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -170,6 +170,7 @@ function showImportReview(){
 }
 try{
  app.innerHTML='<p role="status">듀오링고 단어장을 준비하고 있어요…</p>';
+ await repairCineGloss(storage,localStorage);
  for(const lang of Object.keys(COURSE_LANGUAGES)){
   try{pendingImports.push(...await importCourse(await loadCourse(lang),storage,localStorage));}
   catch(e){importErrors.push(COURSE_LANGUAGES[lang]+': '+e.message);}
