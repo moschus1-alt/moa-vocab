@@ -14,7 +14,7 @@ export function pictureMarkup(presentation){
  return `<svg viewBox="0 0 260 230" width="260" height="230" role="img" aria-label="${presentation.label}" style="max-width:100%;display:block;margin:0 auto"><rect x="10" y="10" width="240" height="210" rx="32" fill="#f1f3e8"/><path d="M109 65q-15-15 0-30M139 65q-15-15 0-30" fill="none" stroke="#c1c9b5" stroke-width="4" stroke-linecap="round"/>${presentation.drawing}</svg>`;
 }
 function meaningKeys(word){
- return (word.choiceMeanings||[word.studyPrompt||word.senses?.[0]?.meaning||'']).flatMap(s=>s.split(/[,;/·]/)).map(s=>s.replace(/\([^)]*\)/g,'').replace(/\s/g,'').normalize('NFC')).filter(Boolean);
+ return (word.choiceMeanings||[word.studyPrompt||word.senses?.[0]?.meaning||'']).flatMap(s=>String(s??'').split(/[,;/·]/)).map(s=>s.replace(/\([^)]*\)/g,'').replace(/\s/g,'').normalize('NFC')).filter(Boolean);
 }
 export function choicesFor(word,words,rng=Math.random){
  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -27,4 +27,28 @@ export function choicesFor(word,words,rng=Math.random){
   seen.add(key(candidate.headword));other.push(candidate.headword);
  }
  return shuffle([word.headword,...shuffle(other).slice(0,3)]);
+}
+
+
+// Spanish → Korean: use one real glossary sense per option, never guessed translations.
+// Exclude candidates whose senses overlap the target, including source gloss variants.
+function firstMeaning(word){
+ const raw=String(word.studyPrompt||word.senses?.[0]?.meaning||'').replace(/\([^)]*\)/g,' ').trim();
+ return raw.split(/[,;/，；\n·・]/).map(s=>s.trim()).find(Boolean)||'';
+}
+export function meaningChoicesFor(word,words,rng=Math.random){
+ const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+ const target=firstMeaning(word);
+ if(!target)return [];
+ const key=s=>String(s).normalize('NFC').replace(/\s+/g,'').toLocaleLowerCase();
+ const targetKeys=meaningKeys(word),seen=new Set([key(target)]),others=[];
+ for(const candidate of words){
+  if(candidate.language!==word.language||key(candidate.headword)===key(word.headword))continue;
+  const label=firstMeaning(candidate),normalized=key(label);
+  if(!label||seen.has(normalized))continue;
+  const candidateKeys=meaningKeys(candidate);
+  if(candidateKeys.some(a=>targetKeys.some(b=>a===b||(Math.min(a.length,b.length)>=2&&(a.startsWith(b)||b.startsWith(a))))))continue;
+  seen.add(normalized);others.push(label);
+ }
+ return shuffle([target,...shuffle(others).slice(0,3)]);
 }
