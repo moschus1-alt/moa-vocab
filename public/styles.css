@@ -84,3 +84,5 @@ main:has(.session-header) #skip-voice{
  padding:5px;
  margin-top:2px;
 }
+
+.choice-options button[lang="ko"]{font-size:clamp(12px,3.5vw,16px);line-height:1.35;overflow-wrap:anywhere}
