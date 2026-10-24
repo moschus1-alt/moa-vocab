@@ -107,12 +107,11 @@ function renderQuizSession(w,progress){
  recognition.cancel();stopSpeech();
  const direction='ko-foreign',card=quizCard(w,direction),result=session.result,attempt=session.attempt,presentation=presentationFor(w);
  if(presentation.kind==='choice'){renderChoiceSession(w,progress,card);return;}
- app.innerHTML=`<div class="session-header"><button id="end-study">학습 나가기</button><span>남은 문제 ${session.queue.length}개</span></div><div class="progress"><div style="width:${progress}%"></div></div><div class="quiz-card"><span class="tag">한국어 → 스페인어 말하기</span><p class="quiz-instruction">${presentation.kind==='picture'?'그림을 보고 스페인어로 말하세요':'뜻을 보고 스페인어로 말하세요'}</p>${presentation.kind==='picture'?pictureMarkup(presentation):`<h2 class="quiz-prompt" lang="ko">${esc(card.prompt)}</h2>`}${attempt?`<p class="muted">인식한 말: <span lang="es">${esc(attempt.input)}</span></p>`:''}${!result?`${attempt?`<p class="quiz-result wrong" role="status">아직 정답이 아니에요. ${attempt.retriesLeft}번 더 말해 보세요.</p>`:''}<p id="voice-status" role="status" aria-live="polite">마이크를 준비하고 있어요…</p><button type="button" id="voice-answer" class="wide">마이크 시작</button><p class="muted">말이 인식되면 바로 채점해요. 처음에는 마이크 권한을 허용해 주세요. 음성은 브라우저 인식 서비스로 전송될 수 있으며 모아는 녹음하지 않습니다.</p>`:`<div class="quiz-result ${result.correct?'correct':'wrong'}" role="status"><strong>${result.correct?'정답이에요!':'아쉬워요. 정답을 확인하세요.'}</strong><span lang="es">${esc(result.answerLabel)}</span>${result.reason?`<p>${esc(result.reason)}</p>`:''}</div><button id="hear-answer" class="wide">스페인어 발음 듣기</button><button id="next-question" class="primary wide">다음 문제</button>`}</div><p class="muted center">인식된 스페인어 단어로 채점하며 발음 점수를 매기지는 않습니다.</p>`;
+ app.innerHTML=`<div class="session-header"><button id="end-study">학습 나가기</button><span>남은 문제 ${session.queue.length}개</span></div><div class="progress"><div style="width:${progress}%"></div></div><div class="quiz-card"><span class="tag">한국어 → 스페인어 말하기</span><p class="quiz-instruction">${presentation.kind==='picture'?'그림을 보고 스페인어로 말하세요':'뜻을 보고 스페인어로 말하세요'}</p>${presentation.kind==='picture'?pictureMarkup(presentation):`<h2 class="quiz-prompt" lang="ko">${esc(card.prompt)}</h2>`}${attempt?`<p class="muted">인식한 말: <span lang="es">${esc(attempt.input)}</span></p>`:''}${!result?`${attempt?`<p class="quiz-result wrong" role="status">아직 정답이 아니에요. ${attempt.retriesLeft}번 더 말해 보세요.</p>`:''}<p id="voice-status" role="status" aria-live="polite">마이크를 준비하고 있어요…</p><button type="button" id="voice-answer" class="wide">마이크 시작</button><button type="button" id="skip-voice" class="wide">모르겠어요 · 정답 보기</button><p class="muted">서두르지 말고 말해 보세요. 인식이 중단되면 마이크를 다시 시작할 수 있으며, 인식 실패는 오답으로 계산하지 않아요.</p>`:`<div class="quiz-result ${result.correct?'correct':'wrong'}" role="status"><strong>${result.correct?'정답이에요!':'아쉬워요. 정답을 확인하세요.'}</strong><span lang="es">${esc(result.answerLabel)}</span>${result.reason?`<p>${esc(result.reason)}</p>`:''}</div><button id="hear-answer" class="wide">스페인어 발음 듣기</button><button id="next-question" class="primary wide">다음 문제</button>`}</div><p class="muted center">인식된 스페인어 단어로 채점하며 발음 점수를 매기지는 않습니다.</p>`;
  $('#end-study').onclick=()=>{recognition.cancel();stopSpeech();session=null;renderStudyV2()};
  if(result){
-  $('#hear-answer').onclick=()=>speakWord(w,()=>{},notice);
+  bindStudyAnswerAudio(w);
   $('#next-question').onclick=()=>{stopSpeech();$('#next-question').disabled=true;finishStudyItem(w,result.correct?(result.failures?'unsure':'know'):'unknown');};
-  if(result.skip)autoPass();
   return;
  }
  let listening=false,submitted=false;
@@ -120,7 +119,7 @@ function renderQuizSession(w,progress){
  const status=(text,active)=>{if(!button.isConnected)return;listening=active;statusElement.textContent=text;button.textContent=active?'마이크 잠시 끄기':'마이크 다시 시작';};
  const start=()=>{
   if(!button.isConnected||document.hidden||submitted)return;
-  stopSpeech();recognition.start({language:'es',onStatus:status,onFailure:message=>{if(!button.isConnected||submitted)return;submitted=true;session.attempt={input:'인식되지 않음',failures:0};session.result={correct:false,skip:true,answerLabel:card.answerLabel,input:'인식되지 않음',reason:message};renderQuizSession(w,progress);},onText:text=>{
+  stopSpeech();recognition.start({language:'es',onStatus:status,onFailure:message=>{if(!button.isConnected||submitted)return;status(message,false);},onText:text=>{
    if(submitted||!button.isConnected||document.hidden)return;
    submitted=true;
    session.attempt=gradeAttempt(w,direction,text,session.attempt?.failures||0);
@@ -129,7 +128,8 @@ function renderQuizSession(w,progress){
   }});
  };
  button.onclick=()=>{if(listening&&button.textContent==='마이크 잠시 끄기'){recognition.cancel();status('마이크를 껐어요. 다시 시작을 누르면 듣습니다.',false);}else start();};
- if(!recognition.supported){session.result={correct:false,skip:true,answerLabel:card.answerLabel,reason:'이 브라우저는 음성인식을 지원하지 않아요.'};renderQuizSession(w,progress);}
+ $('#skip-voice').onclick=()=>{recognition.cancel();session.result={correct:false,skip:true,answerLabel:card.answerLabel,reason:'이번 문제를 건너뛰었어요.'};renderQuizSession(w,progress);};
+ if(!recognition.supported){status('이 브라우저에서는 음성인식을 사용할 수 없어요. 정답 보기를 눌러 진행할 수 있어요.',false);button.disabled=true;}
  else queueMicrotask(start);
 }
 function renderChoiceSession(w,progress,card){
@@ -145,9 +145,20 @@ function renderChoiceSession(w,progress,card){
   if(!session.attempt.correct)session.wrongChoices.push(input);
   session.result=session.attempt.finished?{...session.attempt,skip:!session.attempt.correct}:null;renderChoiceSession(w,progress,card);
  });
- if(result){$('#hear-answer').onclick=()=>speakWord(w,()=>{},notice);$('#next-question').onclick=()=>{stopSpeech();$('#next-question').disabled=true;finishStudyItem(w,result.correct?(result.failures?'unsure':'know'):'unknown')};if(result.skip)autoPass();}
+ if(result){bindStudyAnswerAudio(w);$('#next-question').onclick=()=>{stopSpeech();$('#next-question').disabled=true;finishStudyItem(w,result.correct?(result.failures?'unsure':'know'):'unknown')};}
 }
-function autoPass(){const button=$('#next-question');if(!button)return;button.insertAdjacentHTML('beforebegin','<p role="status">정답을 확인하세요. 잠시 후 다음 문제로 넘어갑니다.</p>');setTimeout(()=>{if(button.isConnected&&!document.hidden)button.click()},2800);}
+function bindStudyAnswerAudio(word){
+ const button=$('#hear-answer');if(!button)return;
+ button.onclick=()=>{
+  // Replaying the same word must not toggle speech off.
+  stopSpeech();
+  speakWord(word,state=>{
+   if(!button.isConnected)return;
+   button.textContent=state==='loading'?'발음 준비 중…':state==='speaking'?'발음 재생 중…':'스페인어 발음 다시 듣기';
+   button.setAttribute('aria-busy',String(state==='loading'));
+  },message=>{if(button.isConnected)button.textContent='스페인어 발음 다시 듣기';notice(message)});
+ };
+}
 function openData(){recognition.cancel();
  $('#dialog-content').innerHTML=`<div class="dialog-top"><h2>단어장 보관하기</h2><button id="close-data" class="icon-button" aria-label="닫기">×</button></div><p>단어와 학습 기록은 이 브라우저에만 저장됩니다. 기기를 바꾸기 전에 백업해 주세요.</p><button id="export" class="primary wide">JSON 백업 다운로드</button><label class="file-label">백업 파일 복원<input id="import" type="file" accept="application/json,.json"></label><p class="muted">현재 단어를 유지하며 합칩니다. 같은 단어는 뜻을 합치고 현재 학습 기록을 유지합니다. 새 단어는 백업의 학습 기록을 가져옵니다.</p><div id="data-status" role="status"></div><hr><h3>홈 화면에 설치</h3><button id="install" ${installEvent?'':'hidden'} class="wide">모아 앱 설치</button><p class="muted">Android: 브라우저 메뉴의 ‘앱 설치’<br>iPhone: Safari 공유 메뉴 → ‘홈 화면에 추가’<br>한 번 열어둔 뒤에는 저장한 단어를 오프라인으로 학습할 수 있어요.</p>`;
  $('#close-data').onclick=()=>dialog.close();$('#export').onclick=async()=>{try{const b=await storage.backup(),url=URL.createObjectURL(new Blob([JSON.stringify(b,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=`moa-vocab-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#data-status').textContent=`${b.words.length}개 단어의 백업을 다운로드했어요.`}catch(e){$('#data-status').textContent=e.message}};
