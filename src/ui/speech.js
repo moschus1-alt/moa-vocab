@@ -60,7 +60,7 @@ export function speakWord(word, onState, onError) {
     if (active !== current) return;
     stopSpeech();
     onError('발음 재생이 시작되지 않았습니다. 기기의 음성 설정과 인터넷 연결을 확인해 주세요.');
-  }, 5000);
+  }, 12000);
   try { synth.resume(); synth.speak(utterance); }
   catch { finish('발음을 재생하지 못했습니다. 잠시 후 다시 시도해 주세요.'); }
 }
